@@ -20,6 +20,13 @@ Change
     * 13;
 
 
+# SOME SCREENSHOTS
+![screen1](https://hanbai.geekoi.com/hanbai1.png)
+![screen2](https://hanbai.geekoi.com/hanbai2.png)
+![screen3](https://hanbai.geekoi.com/hanbai3.png)
+![screen4](https://hanbai.geekoi.com/hanbai4.png)
+![screen5](https://hanbai.geekoi.com/hanbai5.png)
+
 # HOW TO INSTALL
 
 ```ruby

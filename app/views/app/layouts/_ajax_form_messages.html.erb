@@ -1,0 +1,11 @@
+<% angular = nil unless defined?(angular)%>
+<% if angular == true %>
+<div class="col-md-12 alert alert-success success-message" ng-hide="success_message == null">{{success_message}}</div>
+<div class="col-md-12 alert alert-danger error-message" ng-hide="error_message == null">
+	{{error_message}} <br />
+	{{error_message_details}}
+</div>
+<% else %>
+<div class="col-md-12 alert alert-success success-message hide"></div>
+<div class="col-md-12 alert alert-danger error-message hide"></div>
+<% end %>

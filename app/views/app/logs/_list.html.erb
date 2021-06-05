@@ -1,0 +1,24 @@
+<div class="row" ng-controller="LogController as logCtrl" ng-init="logCtrl.initialize('<%= current_user.email %>', '<%= current_user.authentication_token %>', '<%= object%>')">
+  <div class="col-xs-12">
+    <h5>
+      <i class="fa fa-list"></i>
+      Historial
+    </h5>
+  </div>
+  <div class="col-xs-12 text-center" ng-hide="logCtrl.logs.length > 0">
+    <i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+  </div>
+  <div class="col-xs-12" ng-show="logCtrl.logs.length > 0">
+    <div class="media" ng-repeat="log in logCtrl.logs">
+      <div class="media-left">
+        <a href="#">
+          <img class="media-object" ng-src="{{log.user.image}}" alt="img">
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">{{log.user.name}}</h4>
+        {{log.action_text}}
+      </div>
+    </div>
+  </div>
+</div>

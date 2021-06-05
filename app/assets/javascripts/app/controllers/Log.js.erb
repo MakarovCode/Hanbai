@@ -1,0 +1,47 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("log-module", ['dragularModule', 'ngSanitize']);
+
+	module.controller('LogController', ['$timeout', '$interval', '$http', '$scope', 'dragularService', function ($timeout, $interval, $http, $scope, dragularService) {
+		var self = this;
+		this.logs = [];
+		this.object = "funnel"
+
+		this.initialize = function (user_uuid, user_token, object) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+			this.object = object;
+		}
+
+		this.getLogs = function(funnel_id, deal_id){
+			var params = {
+				funnel_id: funnel_id,
+				deal_id: deal_id
+			}
+
+			$http.get("/app/api/v1/logs.json", {params: params}).then(
+				function(res, status){
+					self.logs = res.data;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		$scope.$on('initLog', function (event, args) {
+			if (self.object == args.object){
+				self.logs = [];
+				$scope.$emit('getActualLogID', {object: args.object});
+			}
+		});
+
+		$scope.$on('showLog', function (event, args) {
+			if (self.object == args.object){
+				self.getLogs(args.funnel_id, args.deal_id);
+			}
+		});
+
+	}]);
+})();

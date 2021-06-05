@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  funnel: one
+  permission: MyString
+
+two:
+  user: two
+  funnel: two
+  permission: MyString

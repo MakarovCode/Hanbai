@@ -1,0 +1,27 @@
+<div class="row" ng-controller="CalendarController as cCtrl" ng-init="cCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token %>')">
+	<div class="col-md-12">
+		<section class="panel panel-default">
+			<div class="panel-heading">
+				<strong>
+					<span class="fa fa-calendar-check-o"></span>
+					<%= t("activities.title") %>
+					<button type="button" class="btn btn-primary pull-right btn-xs" ng-click="cCtrl.toggleCalendar()" ng-show="cCtrl.show_calendar == true">Ver en modo lista</button>
+					<button type="button" class="btn btn-primary pull-right btn-xs" ng-click="cCtrl.toggleCalendar()" ng-hide="cCtrl.show_calendar == true">Ver en modo calendario</button>
+				</strong>
+			</div>
+			<div class="panel-body">
+
+
+				<div class="row">
+					<%= render "list"%>
+
+					<div ui-calendar="uiConfig.calendar" class="col-md-12 calendar" ng-model="cCtrl.activities" id="activitiesCalendar" ng-show="cCtrl.show_calendar == true"></div>
+
+					<%= render "search" %>
+				</div>
+			</div>
+		</section>
+	</div>
+	<%= render "new" %>
+	<%= render "app/funnels/expire" %>
+</div>

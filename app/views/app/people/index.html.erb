@@ -1,0 +1,188 @@
+<div class="row" ng-controller="PeopleController as pCtrl" ng-init="pCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token%>')">
+	<div class="col-md-12">
+		<section class="panel panel-default">
+			<div class="panel-heading">
+				<strong>
+					<span class="fa fa-users"></span>
+					<%= t("people.title") %>
+				</strong>
+			</div>
+			<div class="panel-body" style="overflow-x:auto;">
+				<actions class="pull-left columns btn-group" style="padding-bottom: 20px;">
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-new-person">
+						<i class="fa fa-plus "></i>
+						Nuevo contacto
+					</button>
+					<%= link_to app_extra_fields_path, :"data-turbolinks" => false , class: "btn btn-default" do %>
+						<i class="fa fa-list "></i>
+						Campos Extras
+					<% end %>
+					<button type="button" class="btn btn-default" data-toggle="modal" data-target=".modal-new-company">
+						<i class="fa fa-plus "></i>
+						Nuevo organización
+						<i class="fa fa-building-o "></i>
+					</button>
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target=".modal-import-person">
+						<i class="fa fa-file-excel-o  "></i>
+						Importar Excel
+					</button>
+					<button type="button" class="btn btn-danger" ng-click="pCtrl.getTrash();" ng-hide="pCtrl.only_trash == true">
+						<i class="fa fa-trash-o  "></i>
+						Ver papelera
+					</button>
+					<button type="button" class="btn btn-default" ng-click="pCtrl.getPeople();" ng-show="pCtrl.only_trash == true">
+						<i class="fa fa-users  "></i>
+						Ver todos
+					</button>
+					<input type="text" class="form-control" style="width: 200px !important;" placeholder="Buscar contacto..." ng-model="pCtrl.search_term"/>
+				</actions>
+
+				<table class="table table-stripped table-bordered">
+					<thead>
+						<!-- <th style="width: 60px;" class="order-column" ng-click="pCtrl.orderBy('id')" ng-class="{'order-column-active': pCtrl.order_by == 'id' || pCtrl.order_by == '-id'}">
+							ID
+							<i class="fa fa-caret-up pull-right" ng-show="pCtrl.order_by == 'id'"></i>
+							<i class="fa fa-caret-down pull-right" ng-show="pCtrl.order_by == '-id'"></i>
+						</th> -->
+						<th style="min-width: 100px;" class="order-column" ng-click="pCtrl.orderBy('name')" ng-class="{'order-column-active': pCtrl.order_by == 'name' || pCtrl.order_by == '-name'}">
+							Nombre
+							<i class="fa fa-caret-up pull-right" ng-show="pCtrl.order_by == 'name'"></i>
+							<i class="fa fa-caret-down pull-right" ng-show="pCtrl.order_by == '-name'"></i>
+						</th>
+						<th style="min-width: 100px;" class="order-column" ng-click="pCtrl.orderBy('role')" ng-class="{'order-column-active': pCtrl.order_by == 'role' || pCtrl.order_by == '-role'}">
+							Cargo/Rol
+							<i class="fa fa-caret-up pull-right" ng-show="pCtrl.order_by == 'role'"></i>
+							<i class="fa fa-caret-down pull-right" ng-show="pCtrl.order_by == '-role'"></i>
+						</th>
+						<th style="min-width: 120px;" class="">
+							Organización
+							<!-- <i class="fa fa-caret-up pull-right"></i> -->
+						</th>
+						<th style="min-width: 180px;" class="">
+							Teléfonos
+						</th>
+						<th style="min-width: 180px;" class="">
+							Emails
+						</th>
+						<th style="min-width: 180px;" class="">
+							Direcciones
+						</th>
+						<th style="min-width: 60px;" class="order-column" ng-click="pCtrl.orderBy('open_deals_count')" ng-class="{'order-column-active': pCtrl.order_by == 'open_deals_count' || pCtrl.order_by == '-open_deals_count'}">
+							Negocios abiertos
+							<i class="fa fa-caret-up pull-right" ng-show="pCtrl.order_by == 'open_deals_count'"></i>
+							<i class="fa fa-caret-down pull-right" ng-show="pCtrl.order_by == '-open_deals_count'"></i>
+						</th>
+						<th style="min-width: 60px;" class="order-column" ng-click="pCtrl.orderBy('undone_activities_count')" ng-class="{'order-column-active': pCtrl.order_by == 'undone_activities_count' || pCtrl.order_by == '-undone_activities_count'}">
+							Actividades pendientes
+							<i class="fa fa-caret-up pull-right" ng-show="pCtrl.order_by == 'undone_activities_count'"></i>
+							<i class="fa fa-caret-down pull-right" ng-show="pCtrl.order_by == '-undone_activities_count'"></i>
+						</th>
+						<th style="min-width: 100px;" class="">
+							Acciones
+						</th>
+					</thead>
+					<tbody>
+						<tr ng-repeat="person in pCtrl.people | filter: pCtrl.search_term | orderBy: pCtrl.order_by">
+							<!-- <td>
+								{{person.id}}
+							</td> -->
+							<td>
+								<span ng-click="pCtrl.editPerson(person, 'name')" ng-hide="pCtrl.field_to_edit == 'name' && pCtrl.person_to_edit.id == person.id">{{person.name}}</span>
+								<input type="text" ng-show="pCtrl.field_to_edit == 'name' && pCtrl.person_to_edit.id == person.id" ng-blur="pCtrl.updatePerson(this, person, 'name');" ng-model="person.name"/>
+							</td>
+							<td ng-click="pCtrl.editPerson(person, 'role')">
+								<span ng-hide="pCtrl.field_to_edit == 'role' && pCtrl.person_to_edit.id == person.id">{{person.role}}</span>
+								<input type="text" ng-show="pCtrl.field_to_edit == 'role' && pCtrl.person_to_edit.id == person.id" ng-blur="pCtrl.updatePerson(this, person, 'role');"/ ng-model="person.role">
+							</td>
+							<td ng-click="pCtrl.editPerson(person, 'company_id')">
+								<span ng-hide="pCtrl.field_to_edit == 'company_id' && pCtrl.person_to_edit.id == person.id">{{person.company.name}}</span>
+								<select ng-show="pCtrl.field_to_edit == 'company_id' && pCtrl.person_to_edit.id == person.id" ng-change="pCtrl.updatePerson(this, person, 'company_id');" ng-model="person.company_id" class="form-control">
+									<option ng-repeat="company in pCtrl.companies" value="{{company.id}}%>">{{company.label}}</option>
+								</select>
+							</td>
+							<td>
+								<p ng-repeat="phone in person.phones">
+									{{phone.phone}} ({{phone.kind}})
+									<button type="button" class="btn btn-danger btn-xs pull-right" ng-click="pCtrl.deletePhoneFromPerson(person, phone);">
+										<i class="fa fa-trash-o"></i>
+									</button>
+								</p>
+								<div class="input-group">
+									<input type="text" class="form-control input-xs" placeholder="8808080, Trabajo" style="height: 25px;" ng-model="person.new_phone">
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-success btn-xs" ng-click="pCtrl.addPhoneToPerson(person);">
+											<i class="fa fa-plus"></i>
+										</button>
+									</span>
+								</div>
+							</td>
+							<td>
+								<p ng-repeat="email in person.emails">
+									{{email.email}} ({{email.kind}})
+									<button type="button" class="btn btn-danger btn-xs pull-right" ng-click="pCtrl.deleteEmailFromPerson(person, email);">
+										<i class="fa fa-trash-o"></i>
+									</button>
+								</p>
+								<div class="input-group">
+									<input type="text" class="form-control input-xs" placeholder="Email" style="height: 25px;" ng-model="person.new_email">
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-success btn-xs" ng-click="pCtrl.addEmailToPerson(person);">
+											<i class="fa fa-plus"></i>
+										</button>
+									</span>
+								</div>
+							</td>
+
+							<td>
+								<p ng-repeat="address in person.addresses">
+									{{address.address}} ({{address.kind}})
+									<button type="button" class="btn btn-danger btn-xs pull-right" ng-click="pCtrl.deleteAddressFromPerson(person, address);">
+										<i class="fa fa-trash-o"></i>
+									</button>
+								</p>
+								<div class="input-group">
+									<input type="text" class="form-control input-xs" placeholder="Dirección" style="height: 25px;" ng-model="person.new_address">
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-success btn-xs" ng-click="pCtrl.addAddressToPerson(person);">
+											<i class="fa fa-plus"></i>
+										</button>
+									</span>
+								</div>
+							</td>
+
+							<td>
+								{{person.open_deals_count}}
+							</td>
+							<td>
+								{{person.undone_activities_count}}
+							</td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm" ng-click="pCtrl.showPerson(person);">
+									<i class='fa fa-eye'></i>
+								</button>
+								<button type="button" class="btn btn-danger btn-sm" ng-hide="person.status == 1" ng-click="pCtrl.deletePerson(person);">
+									<i class='fa fa-trash-o'></i>
+								</button>
+								<button type="button" class="btn btn-success btn-sm" ng-show="person.status == 1" ng-click="pCtrl.restorePerson(person);">
+									<i class='fa fa-check'></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</div>
+</div>
+
+<!-- <script>
+tableCallbacks();
+</script> -->
+
+<%= render "show" %>
+<%= render "new" %>
+<%= render "edit" %>
+<%= render "delete" %>
+<%= render "import" %>
+<%= render "/app/activities/new" %>
+<%= render "/app/organizations/new" %>

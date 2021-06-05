@@ -1,0 +1,53 @@
+<div class="ui-timline-container">
+	<section class="ui-timeline" >
+
+		<article class="tl-item">
+			<div class="tl-body">
+				<div class="tl-entry">
+					<div class="tl-caption">
+						<a href="javascript:;" class="btn btn-primary btn-block" ng-click="fCtrl.newActivity($event);">
+							<i class="fa fa-plus" aria-hidden="true"></i>
+							Nueva actividad
+						</a>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="tl-item" ng-repeat="activity in fCtrl.selected_deal.activities" on-last-repeat>
+			<div class="tl-body">
+				<div class="tl-entry">
+					<div class="tl-icon round-icon sm" ng-class="{'bg-primary': activity.status == null || activity.status == 0, 'bg-danger': activity.status == 1, 'bg-success': activity.status == 2}"><i class="fa {{activity.activity_type.icon}}"></i></div>
+					<div class="tl-content">
+						<h4 class="tl-tile" ng-class="{'text-primary': activity.status == null || activity.status == 0, 'text-danger': activity.status == 1, 'text-success': activity.status == 2}">
+							{{activity.title}}
+							<label class="label label-primary pull-right" ng-class="{'label-primary': activity.status == null || activity.status == 0, 'label-danger': activity.status == 1, 'label-success': activity.status == 2}">
+								{{activity.duration}} Min
+							</label>
+							 <label class="label label-primary pull-right" ng-class="{'label-primary': activity.status == null || activity.status == 0, 'label-danger': activity.status == 1, 'label-success': activity.status == 2}">
+								{{activity.date_and_time}}
+							</label>
+						</h4>
+						<p ng-repeat="note in activity.notes" ng-bind-html="note.text">
+						</p>
+						<div class="btn-group btn-group-sm pull-right">
+						  <button type="button" class="btn btn-success" ng-click="fCtrl.changeActivityStatus($event, activity, 2);" ng-hide="activity.status == 2" >
+								<i class="fa fa-check-square-o" aria-hidden="true"></i>
+						  </button>
+							<button type="button" class="btn btn-primary" ng-click="fCtrl.changeActivityStatus($event, activity, 0);" ng-show="activity.status == 2" >
+								<i class="fa fa-square-o" aria-hidden="true"></i>
+						  </button>
+							<button type="button" class="btn btn-default" ng-click="fCtrl.editActivity($event, activity);" >
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							</button>
+							<button type="button" class="btn btn-danger" ng-click="fCtrl.changeActivityStatus($event, activity, 3);" >
+								<i class="fa fa-trash-o" aria-hidden="true"></i>
+						  </button>
+						</div>
+						<br /><br />
+					</div>
+				</div>
+			</div>
+		</article>
+
+	</section>
+</div>

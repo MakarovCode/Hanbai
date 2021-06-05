@@ -1,0 +1,83 @@
+<div class="col-xs-10 col-sm-4 col-md-3 funnels-menu" ng-show="fCtrl.show_menu == true" ng-click="$event.stopPropagation();">
+	<div ng-show="fCtrl.show_aux_deals_list == null">
+		<div class="row bottom-separator">
+			<div class="col-md-12">
+				<h4>Menu</h4>
+			</div>
+		</div>
+		<div class="row bottom-separator">
+			<div class="col-md-12">
+
+				<%= render "app/users/list_autocomplete", object: "funnels" %>
+
+			</div>
+		</div>
+		<div class="row bottom-separator">
+			<div class="col-md-12">
+				<button type="button" class="btn btn-success btn-block" ng-click="fCtrl.showAuxDealsList($event, 1)">
+					<i class="fa fa-handshake-o"></i> Ver negocios Ganados
+				</button>
+				<button type="button" class="btn btn-danger btn-block" ng-click="fCtrl.showAuxDealsList($event, 2)">
+					<i class="fa fa-hand-o-down"></i> Ver negocios Perdidos
+				</button>
+				<button type="button" class="btn btn-warning btn-block" ng-click="fCtrl.showAuxDealsList($event, 3)">
+					<i class="fa fa-archive"></i> Ver negocios Archivados
+				</button>
+				<button type="button" class="btn btn-default btn-block" ng-click="fCtrl.showExtraFields($event)">
+					<i class="fa fa-list"></i> Campos Extras Negocios
+				</button>
+				<button type="button" class="btn btn-default btn-block" ng-click="fCtrl.changeColor($event);" ng-hide="fCtrl.change_color == true" style="margin-bottom: 10px;">
+					<i class="fa fa-picture-o"></i> Cambiar fondo
+				</button>
+				<button type="button" class="btn btn-danger btn-block" ng-click="fCtrl.cancelChangeColor($event);" ng-show="fCtrl.change_color == true">
+					<i class="fa fa-ban"></i> Cancelar
+				</button>
+			</div>
+			<div class="color-cont col-xs-3" ng-repeat="color in fCtrl.funnel_colors" style="background-color: {{color}}; border-color: {{color}};" ng-show="fCtrl.change_color == true" ng-click="fCtrl.applyColorChange($event, color);">
+			</div>
+		</div>
+		<%= render "app/logs/list", object: "funnel" %>
+	</div>
+	<div ng-hide="fCtrl.show_aux_deals_list == null">
+		<div class="row bottom-separator">
+			<div class="col-md-12" ng-click="fCtrl.hideAuxDealsList($event)">
+				<h4 class="text-success" ng-show="fCtrl.show_aux_deals_list == 1">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Ganados
+				</h4>
+				<h4 class="text-danger" ng-show="fCtrl.show_aux_deals_list == 2">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Perdidos
+				</h4>
+				<h4 class="text-warning" ng-show="fCtrl.show_aux_deals_list == 3">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Archivados
+				</h4>
+			</div>
+		</div>
+		<div class="row bottom-separator">
+			<div class="col-md-12">
+				<input type="text" class="form-control" placeholder="Buscar..." ng-model="fCtrl.show_aux_deals_list_search" style="margin-bottom: 10px;">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 list-no-bg">
+				<article class="card" ng-repeat="deal in fCtrl.aux_deals | filter: {title: fCtrl.show_aux_deals_list_search}" ng-click="fCtrl.showDeal($event, deal);">
+					<div>
+						<div class="status_mark"></div>
+						<header>{{deal.title}}</header>
+						<div class="detail">
+							{{deal.total | currency}} - <span class="text-success"><strong>{{deal.commission | currency}}</strong></span>
+						</div>
+						<div class="detail">
+							{{deal.done_activities_count}}/{{deal.activities_count}}
+						</div>
+						<div class="detail">
+							<button type="button" class="btn btn-link" ng-click="fCtrl.changeDealStatus($event, deal, 0);">Restuarar</button>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+</div>

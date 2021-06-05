@@ -1,0 +1,158 @@
+<div class="modal fade" id="show-deal-modal" tabindex="-1" role="dialog" aria-labelledby="show-deal-modal-label">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="show-deal-modal-label">
+					<label class="badge badge-primary pull-left" ng-class="{'badge-warning': fCtrl.selected_deal.status == 3, 'badge-success': fCtrl.selected_deal.status == 1, 'badge-danger': fCtrl.selected_deal.status == 2}" ng-hide="fCtrl.selected_deal.status == 0 || fCtrl.selected_deal.status == null" style="margin-right: 10px;">
+						<i class="fa fa-5x" aria-hidden="true" ng-class="{'fa-handshake-o': fCtrl.selected_deal.status == 1, 'fa-hand-o-down': fCtrl.selected_deal.status == 2, 'fa-archive': fCtrl.selected_deal.status == 3}"></i>
+					</label>
+					<span ng-hide="fCtrl.show_deal_editing_name == true" ng-click="fCtrl.showDealEditingName($event);">{{fCtrl.selected_deal.title}}</span>
+					<input type="text" ng-model="fCtrl.selected_deal.title" ng-blur="fCtrl.updateDeal(fCtrl.selected_deal, fCtrl.selected_deal.stage_id);" ng-show="fCtrl.show_deal_editing_name == true">
+					<br />
+					<small>Esta en la etapa <b>{{fCtrl.selected_deal.stage.name}}</b></small>
+					<br />
+					<small ng-hide="fCtrl.show_deal_editing_estimated_date == true" ng-click="fCtrl.showDealEditingEstimatedDate($event);">Fecha esperada de cierre <b>{{fCtrl.selected_deal.estimated_close_date}}</b></small>
+					<input type="text" class="datepicker-deal" ng-model="fCtrl.selected_deal.estimated_close_date" ng-show="fCtrl.show_deal_editing_estimated_date == true">
+					<span class="pull-right">
+						<strong ng-hide="fCtrl.show_deal_editing_total == true" ng-click="fCtrl.showDealEditingTotal($event);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Valor del negocio." data-content="Es el valor que seleccionaste al crear el negocio, puedes editar este valor dando click sobre él.">{{fCtrl.selected_deal.total | currency}}</strong>
+						<input type="number" ng-model="fCtrl.selected_deal.total" ng-blur="fCtrl.updateDeal(fCtrl.selected_deal, fCtrl.selected_deal.stage_id);" ng-show="fCtrl.show_deal_editing_total == true">
+						-
+						<strong class="text-success" ng-hide="fCtrl.show_deal_editing_commission == true" ng-click="fCtrl.showDealEditingCommission($event);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Comisión del negocio." data-content="Es la comisión que seleccionaste al crear el negocio, puedes editar este valor dando click sobre él.">{{fCtrl.selected_deal.commission | currency}}</strong>
+						<input type="number" ng-model="fCtrl.selected_deal.commission" ng-blur="fCtrl.updateDeal(fCtrl.selected_deal, fCtrl.selected_deal.stage_id);" ng-show="fCtrl.show_deal_editing_commission == true">
+					</span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-9">
+						<h4><i class="fa fa-calendar-check-o"></i> Actividades ({{fCtrl.selected_deal.done_activities_count}}/{{fCtrl.selected_deal.activities_count}})</h4>
+						<div class="progress">
+							<div class="progress-bar " ng-class="{'progress-bar-danger': fCtrl.selected_deal.activities_percent < 50, 'progress-bar-warning': (fCtrl.selected_deal.activities_percent >= 50 && fCtrl.selected_deal.activities_percent < 100), 'progress-bar-success': fCtrl.selected_deal.activities_percent == 100}" role="progressbar" aria-valuenow="{{fCtrl.selected_deal.activities_percent}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{fCtrl.selected_deal.activities_percent}}%;">
+								{{fCtrl.selected_deal.activities_percent}}%
+							</div>
+						</div>
+						<%#= render "/app/deals/timeline" %>
+						<%= render "/app/activities/timeline" %>
+						<%= render "app/logs/list", object: "deal" %>
+					</div>
+					<div class="col-sm-3">
+						<div class="row bottom-separator">
+							<div class="col-md-12" ng-hide="fCtrl.show_deal_editing_person == true">
+								<h4 data-container="body" data-trigger="hover" data-toggle="popover" data-placement="left" title="Información de contacto." data-content="Información del contacto que seleccionaste para este negocio.">
+									<i class="fa fa-address-book-o" aria-hidden="true"></i>
+									Información
+									<i class="fa fa-pencil-square-o pull-right" aria-hidden="true" ng-click="fCtrl.showDealEditingPerson($event);"></i>
+								</h4>
+								<div class="col-md-12 alert alert-info" ng-show="fCtrl.selected_deal.person == null">
+									No hay un contacto vinculado
+								</div>
+								<div ng-hide="fCtrl.selected_deal.person == null">
+									<p>
+										<b>Contacto:</b><br>
+										{{fCtrl.selected_deal.person.name}}
+									</p>
+									<p ng-hide="fCtrl.selected_deal.person.company == ''">
+										<b>Organización:</b><br>
+										<span ng-hide="fCtrl.selected_deal.person.company == ''">
+											{{fCtrl.selected_deal.person.company.name}}
+										</span>
+										<!-- <div class="col-md-12 alert alert-info" ng-show="fCtrl.selected_deal.person.company == ''">
+											No registraste este contacto en ninguna organización
+										</div> -->
+									</p>
+									<p ng-show="fCtrl.selected_deal.person.phones.length > 0">
+										<b>Teléfonos:</b><br>
+										<ul ng-show="fCtrl.selected_deal.person.phones.length > 0">
+											<li ng-repeat="phone in fCtrl.selected_deal.person.phones">{{phone.phone}}</li>
+										</ul>
+										<!-- <div class="col-md-12 alert alert-info" ng-hide="fCtrl.selected_deal.person.phones.length > 0">
+											No has registrado teléfonos para este contacto
+										</div> -->
+									</p>
+									<p ng-show="fCtrl.selected_deal.person.emails.length > 0">
+										<b>Direcciones de correo:</b><br>
+										<ul ng-show="fCtrl.selected_deal.person.emails.length > 0">
+											<li ng-repeat="email in fCtrl.selected_deal.person.emails">{{email.email}}</li>
+										</ul>
+										<!-- <div class="col-md-12 alert alert-info" ng-hide="fCtrl.selected_deal.person.emails.length > 0">
+											No has registrado correos para este contacto
+										</div> -->
+									</p>
+									<p ng-show="fCtrl.selected_deal.person.addresses.length > 0">
+										<b>Direcciones:</b><br>
+										<ul ng-show="fCtrl.selected_deal.person.addresses.length > 0">
+											<li ng-repeat="address in fCtrl.selected_deal.person.addresses">{{address.address}}</li>
+										</ul>
+										<!-- <div class="col-md-12 alert alert-info" ng-hide="fCtrl.selected_deal.person.addresses.length > 0">
+											No has registrado direcciones para este contacto
+										</div> -->
+									</p>
+									<p ng-repeat="extra_field_deal in fCtrl.selected_deal.extra_field_deals">
+										<b>{{extra_field_deal.extra_field.name}}:</b><br>
+										<span>{{extra_field_deal.value}}</span>
+									</p>
+								</div>
+							</div>
+							<div class="col-md-12" ng-show="fCtrl.show_deal_editing_person == true">
+								<label>Contacto del negocio: </label>
+								<!-- <input type="text" class="form-control" ng-model="fCtrl.selected_deal.person.name" ng-blur="" style="margin-bottom: 10px;"> -->
+								<div class="input-group">
+									<%= autocomplete_field_tag :person_autocomplete, '', autocomplete_app_api_v1_people_path, id_element: "#show_deal_person_id" ,
+									:"data-autocomplete-label" => "No se encontraron registros.", class: "form-control ", :"ng-model" => "fCtrl.selected_deal.person_name", :"data-object" => "person" , :"ng-readonly" => "fCtrl.selected_deal.person_id != null && fCtrl.selected_deal.person_id != ''", :"ng-blur" => "fCtrl.autocompleteShowChange($event, fCtrl.selected_deal)" %>
+									<input type="text" id="show_deal_person_id" ng-model="fCtrl.selected_deal.person_id" style="display:none;" class="autocomplete_id_field" data-object="person">
+									<span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-show="fCtrl.selected_deal.person_id != null && fCtrl.selected_deal.person_id != ''" ng-click="fCtrl.selected_deal.person_id = null; fCtrl.selected_deal.person_name = null">
+											<i class="fa fa-pencil-square-o"></i>
+										</button>
+									</span>
+								</div>
+								<div class="row" id="autocomplete-info" ng-show="deal.person_name != null && deal.person_name != '' && (deal.person_id == null || deal.person_id == '')">
+									<div class="col-md-12 alert alert-info">
+										Se creará un registro con este nombre.
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row bottom-separator">
+							<div class="col-md-12">
+
+								<%= render "app/users/list_autocomplete", object: "deals" %>
+
+							</div>
+						</div>
+
+						<div class="row actions">
+							<div class="col-md-12">
+								<h4>Acciones</h4>
+								<div class="btn-group-vertical" role="group" style="width: 100%;">
+									<button type="button" class="btn btn-success btn-block" ng-click="fCtrl.changeDealStatus($event, fCtrl.selected_deal, 1);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="left" title="Marcar negocio como ganado." data-content="Marcas el negocio como ganado, lo puedes ver o recuperar desde el menú del embudo.">
+										<i class="fa fa-handshake-o"></i> Ganado
+									</button>
+									<button type="button" class="btn btn-danger btn-block" ng-click="fCtrl.changeDealStatus($event, fCtrl.selected_deal, 2);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="left" title="Marcar negocio como perdido." data-content="Marcas el negocio como perdido, lo puedes ver o recuperar desde el menú del embudo.">
+										<i class="fa fa-hand-o-down"></i> Perdido
+									</button>
+									<div class="btn-group" role="group" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="left" title="Mover negocio de etapa." data-content="Te permite mover de forma rápida el negocio de etapa.">
+										<button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<i class="fa fa-arrow-right"></i> Mover
+										</button>
+										<ul class="dropdown-menu">
+											<li ng-repeat="stage in fCtrl.stages" ng-click="fCtrl.updateDeal(fCtrl.selected_deal, stage.id, fCtrl.selected_deal.priority, true);"><a href="#"><b>Mover a:</b> {{stage.name}}</a></li>
+										</ul>
+									</div>
+									<button type="button" class="btn btn-warning btn-block" ng-click="fCtrl.changeDealStatus($event, fCtrl.selected_deal, 3);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="left" title="Marcar negocio como archivado." data-content="Marcas el negocio como archivado, lo puedes ver o recuperar desde el menú del embudo, los negocios archivados no cuentan como negocios terminados, ni ganados ni perdidos.">
+										<i class="fa fa-archive"></i> Archivar
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>

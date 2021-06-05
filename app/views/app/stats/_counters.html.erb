@@ -1,0 +1,47 @@
+<h3>
+  <span class="label label-<%= color%>">
+    <%= object[:count]%>
+  </span>
+  <small class="pull-right">
+      <%= object[:count_difference]%>
+      <% if object[:count_difference] > 0 %>
+      <i class="fa fa-chevron-up" style="color: #23AE89;"></i>
+      <% elsif object[:count_difference] < 0 %>
+      <i class="fa fa-chevron-down" style="color: #d92a18;"></i>
+      <% else %>
+      <i class="fa fa-minus"></i>
+      <% end %>
+  </small>
+</h3>
+<h3>
+  <span>
+    <small>Total:</small><br>
+    <%= number_to_currency object[:amount], precision: 0, separator: "."%>
+  </span>
+  <small class="pull-right">
+    <%= number_to_currency object[:amount_difference], precision: 0, separator: "."%>
+    <% if object[:amount_difference] > 0 %>
+    <i class="fa fa-chevron-up" style="color: #23AE89;"></i>
+    <% elsif object[:amount_difference] < 0 %>
+    <i class="fa fa-chevron-down" style="color: #d92a18;"></i>
+    <% else %>
+    <i class="fa fa-minus"></i>
+    <% end %>
+  </small>
+</h3>
+<h3>
+  <span>
+    <small>Comisiones:</small><br>
+    <%= number_to_currency object[:commission], precision: 0, separator: "."%>
+  </span>
+  <small class="pull-right">
+    <%= number_to_currency object[:commission_difference], precision: 0, separator: "."%>
+    <% if object[:commission_difference] > 0 %>
+    <i class="fa fa-chevron-up" style="color: #23AE89;"></i>
+    <% elsif object[:commission_difference] < 0 %>
+    <i class="fa fa-chevron-down" style="color: #d92a18;"></i>
+    <% else %>
+    <i class="fa fa-minus"></i>
+    <% end %>
+  </small>
+</h3>

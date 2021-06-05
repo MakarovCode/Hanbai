@@ -1,0 +1,132 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("users-info-module", ['dragularModule', 'ngSanitize']);
+
+	module.controller('UsersInfoController', ['$timeout', '$interval', '$http', '$scope', 'dragularService', function ($timeout, $interval, $http, $scope, dragularService) {
+		var self = this;
+		this.member = null;
+		this.show = false;
+		this.object = "funnels";
+		this.object_id = 0;
+		this.funnel_id = 0;
+		this.show_permissions_list = false;
+
+		this.initialize = function (user_uuid, user_token, object, member) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+			this.object = object;
+			this.member = member;
+		}
+
+		this.toggleView = function(event){
+			event.stopPropagation();
+			self.show = !self.show;
+
+			var button = $("#users-autocomplete-button-"+this.object);
+			$("#users-info-view-"+this.object+"-"+this.member.id).css({
+				width: button.width() + "px",
+				left: "10px"
+			});
+			if (this.show == true){
+				$scope.$emit('getActualLogID', {object: this.object});
+			}
+		}
+
+		this.changeMemberPermissions = function(event, member, permission){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				user_id: member.id,
+				permission: permission
+			}
+
+			this.show_permissions_list = false;
+
+			$http.post("/app/api/v1/"+this.object+"/"+this.object_id+"/change_member_permissions.json", params).then(
+				function(res, status){
+					member.permission = res.data.permission;
+					$scope.$emit('changeMemberPermissions', {member: member, object: self.object});
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		this.removeMember = function(event, member){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				user_id: member.id
+			}
+
+			if (this.object == "deals"){
+				params["funnel_id"] = this.funnel_id;
+			}
+
+			$http.post("/app/api/v1/"+this.object+"/"+this.object_id+"/remove_member.json", params).then(
+				function(res, status){
+					$scope.$emit('removeMember', {member: member, object: self.object});
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		$scope.$on('initUsersAutocomplete', function (event, args) {
+
+			if (self.object == args.object){
+				self.funnel_id = args.funnel_id;
+				if (self.object == "funnels"){
+					self.object_id = args.funnel_id;
+				}
+				else{
+					self.object_id = args.deal_id;
+				}
+			}
+		});
+
+		// this.search = function(){
+		// 	var params = {
+		// 		term: this.term
+		// 	}
+		// 	if (this.funnel_id != null){
+		// 		params["funnel_id"] = this.funnel_id;
+		// 		params["all"] = true;
+		// 	}
+		// 	$http.get("/app/api/v1/users.json", {params: params}).then(
+		// 		function(res, status){
+		// 			self.users = res.data;
+		// 			self.loading = false;
+		// 		},
+		// 		function(res, status){
+		// 			self.loading = false;
+		// 		}
+		// 	);
+		// }
+
+		// $scope.$on('initMembers', function (event, args) {
+		// 	if (self.object == args.object){
+		// 		this.members = args.members;
+		// 	}
+		// });
+    //
+		// $scope.$on('initUsersAutocomplete', function (event, args) {
+		// 	if (self.object == args.object){
+		// 		self.funnel_id = args.funnel_id;
+		// 		self.deal_id = args.deal_id;
+		// 		if (self.object == "funnels"){
+		// 			self.object_id = self.funnel_id;
+		// 		}
+		// 		else{
+		// 			self.object_id = self.deal_id;
+		// 		}
+		// 	}
+		// });
+
+	}]);
+})();

@@ -1,0 +1,220 @@
+
+<%
+hours = []
+ampm = "AM"
+(1..2).each do |i|
+	(1..12).each do |j|
+		tmp_j = j
+		if i == 2
+			if j == 12
+				break
+			end
+			tmp_j += 12
+		end
+		(0..45).step(15).each do |k|
+			if k < 10
+				if tmp_j < 10
+					hours.push(["0#{j}:0#{k} #{ampm}", "0#{tmp_j}:0#{k}"])
+				else
+					hours.push(["#{j}:0#{k} #{ampm}", "#{tmp_j}:0#{k}"])
+				end
+			else
+				if tmp_j < 10
+					hours.push(["0#{j}:#{k} #{ampm}", "0#{tmp_j}:#{k}"])
+				else
+					hours.push(["#{j}:#{k} #{ampm}", "#{tmp_j}:#{k}"])
+				end
+			end
+		end
+	end
+	ampm = "PM"
+end
+
+durations = [
+	["15 minutos", 15],
+	["30 minutos", 30],
+	["45 minutos", 45],
+	["1 hora", 60],
+	["1 hora y 15 minutos", 75],
+	["1 hora y media", 90],
+	["1 hora y 45 minutos", 105],
+	["2 horas", 120],
+	["2 horas y 15 minutos", 135],
+	["2 horas y media", 150],
+	["2 horas y 45 minutos", 165],
+	["3 horas", 180],
+	["3 horas y 15 minutos", 195],
+	["3 horas y media", 210],
+	["3 horas y 45 minutos", 225],
+	["4 horas", 240]
+]
+%>
+
+<div class="modal fade modal-new-activity" tabindex="-1" role="dialog" aria-labelledby="modal-new-activity-label" ng-controller="NewCalendarController as nCtrl" ng-init="nCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token %>')">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<%= form_for([:app, @activity], remote: true, url: app_api_v1_activities_path(:json), method: :post, html: {:"data-object" => "activity", :"data-hack" => false}) do |f| %>
+			<%= render "app/layouts/auth" %>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-new-activity-labe"><%= t("activities.new.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-7">
+						<%= render "app/layouts/ajax_form_messages", angular: true %>
+						<div class="form-group row">
+							<%= f.label :activity_type, class: "col-sm-12" %>
+							<div class="col-sm-12">
+								<div class="btn-group" ng-init="nCtrl.first_activity_type = <%= current_user.activity_types.first.id %>">
+									<% current_user.activity_types.each_with_index do |type, index| %>
+									<button class="btn" ng-class="{'btn-default': nCtrl.new_event.activity_type_id != <%= type.id %>, 'btn-primary': nCtrl.new_event.activity_type_id == <%= type.id %>}" type="button" ng-click="nCtrl.selectActivity(<%= type.id %>, '<%= type.name %>')" ng-disabled="nCtrl.new_event.activity_type_id == <%= type.id %>" data-toggle="tooltip" data-placement="top" title="<%= type.name%>">
+										<i class="<%= type.icon %>"></i>
+									</button>
+									<% end %>
+								</div>
+								<%= f.hidden_field :activity_type_id, :"ng-model" => "nCtrl.new_event.activity_type_id" %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<%= f.label :title, class: "col-sm-12" %>
+							<div class="col-sm-12">
+								<%= f.text_field :title, class: "form-control", autofocus: true, :"ng-model" => "nCtrl.new_event.title" %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="activity_date" class="col-xs-4">Fecha</label>
+							<label for="activity_date" class="col-xs-4">Hora</label>
+							<%= f.label :duration, class: "col-xs-4" %>
+
+							<div class="col-xs-4">
+								<%= text_field_tag :activity, :date, class: "datepicker form-control", :"ng-model" => "nCtrl.new_event.date", :"ng-change" => "nCtrl.timeChange();"%>
+							</div>
+							<div class="col-xs-4">
+								<%= select_tag "time", options_for_select(hours), class: "form-control", :"ng-model" => "nCtrl.new_event.time", :"ng-change" => "nCtrl.timeChange();"%>
+							</div>
+							<div class="col-xs-4">
+								<%= select_tag "duration", options_for_select(durations), include_blank: false, selected: 15, class: "form-control", :"ng-model" => "nCtrl.new_event.duration", :"ng-change" => "nCtrl.timeChange();"%>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="person_notes_text" class="col-sm-12">Notas</label>
+							<div class="col-sm-12">
+								<textarea class="form-control" name="person[notes_attributes][][text]" id="person_notes_text" ng-model="nCtrl.new_event.notes[0].text" ui-tinymce="tinymceOptions"></textarea>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<%= f.label :user, class: "col-sm-12" %>
+							<div class="col-sm-12">
+								<%#= autocomplete_field_tag :user_autocomplete, '', autocomplete_app_api_v1_user_path, id_element: "#new_activity #activity_user_id" ,
+								:"data-autocomplete-label" => "No se encontraron registros.", class: "form-control"%>
+								<%#= f.hidden_field :user_id %>
+								<div class="alert alert-info">
+									¡Muy pronto podrás trabajar con equipos de trabajo de ventas!
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<%= f.label :deal, class: "col-sm-12" %>
+							<div class="col-sm-12">
+								<div class="input-group">
+									<%= autocomplete_field_tag :deal_autocomplete, '', autocomplete_app_api_v1_deals_path, id_element: "#new_activity #activity_deal_id" ,
+									:"data-autocomplete-label" => "No se encontraron registros.", class: "form-control autcomplete-angular", :"ng-model" => "nCtrl.new_event.deal_title", :"data-object" => "deal" , :"ng-readonly" => "nCtrl.new_event.deal_id != null && nCtrl.new_event.deal_id != ''"%>
+									<input type="text" name="activity[deal_id]" id="activity_deal_id" ng-model="nCtrl.new_event.deal_id" style="display:none;" class="autocomplete_id_field" data-object="deal">
+									<span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-show="nCtrl.new_event.deal_id != null && nCtrl.new_event.deal_id != ''" ng-click="nCtrl.new_event.deal_id = null; nCtrl.new_event.deal_title = null">
+											<i class="fa fa-pencil-square-o"></i>
+										</button>
+									</span>
+								</div>
+								<div class="row" id="autocomplete-info" ng-show="nCtrl.new_event.deal_title != null && nCtrl.new_event.deal_title != '' && (nCtrl.new_event.deal_id == null || nCtrl.new_event.deal_id == '')">
+									<div class="col-md-12 alert alert-info">
+										Se creará un registro con este nombre.
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<%= f.label :person, class: "col-sm-12" %>
+							<div class="col-sm-12">
+								<div class="input-group">
+									<%= autocomplete_field_tag :person_autocomplete, '', autocomplete_app_api_v1_people_path, id_element: "#new_activity #activity_person_id" ,
+									:"data-autocomplete-label" => "No se encontraron registros.", class: "form-control autcomplete-angular", :"ng-model" => "nCtrl.new_event.person_name", :"data-object" => "person" , :"ng-readonly" => "nCtrl.new_event.person_id != null && nCtrl.new_event.person_id != ''" %>
+									<input type="text" name="activity[person_id]" id="activity_person_id" ng-model="nCtrl.new_event.person_id" style="display:none;" class="autocomplete_id_field" data-object="person">
+									<span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-show="nCtrl.new_event.person_id != null && nCtrl.new_event.person_id != ''" ng-click="nCtrl.new_event.person_id = null; nCtrl.new_event.person_name = null">
+											<i class="fa fa-pencil-square-o"></i>
+										</button>
+									</span>
+								</div>
+								<div class="row" id="autocomplete-info" ng-show="nCtrl.new_event.person_name != null && nCtrl.new_event.person_name != '' && (nCtrl.new_event.person_id == null || nCtrl.new_event.person_id == '')">
+									<div class="col-md-12 alert alert-info">
+										Se creará un registro con este nombre.
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12" ng-show="nCtrl.new_event.person != null && nCtrl.new_event.person_id == nCtrl.new_event.person.id">
+								<p>
+									<b>Organización:</b><br>
+									<span ng-hide="n.selected_deal.person.company == ''">
+										{{nCtrl.new_event.person.company.name}}
+									</span>
+									<div class="col-md-12 alert alert-info" ng-show="nCtrl.selected_deal.person.company == ''">
+										No registraste este contacto en ninguna organización
+									</div>
+								</p>
+								<p>
+									<b>Teléfonos:</b><br>
+									<ul ng-show="nCtrl.new_event.person.phones.length > 0">
+										<li ng-repeat="phone in nCtrl.new_event.person.phones">{{phone.phone}}</li>
+									</ul>
+									<div class="col-md-12 alert alert-info" ng-hide="nCtrl.new_event.person.phones.length > 0">
+										No has registrado teléfonos para este contacto
+									</div>
+								</p>
+								<p>
+									<b>Direcciones de correo:</b><br>
+									<ul ng-show="nCtrl.new_event.person.emails.length > 0">
+										<li ng-repeat="email in nCtrl.new_event.person.emails">{{email.email}}</li>
+									</ul>
+									<div class="col-md-12 alert alert-info" ng-hide="nCtrl.new_event.person.emails.length > 0">
+										No has registrado correos para este contacto
+									</div>
+								</p>
+								<p>
+									<b>Direcciones:</b><br>
+									<ul ng-show="nCtrl.new_event.person.addresses.length > 0">
+										<li ng-repeat="address in nCtrl.new_event.person.addresses">{{address.address}}</li>
+									</ul>
+									<div class="col-md-12 alert alert-info" ng-hide="nCtrl.new_event.person.addresses.length > 0">
+										No has registrado direcciones para este contacto
+									</div>
+								</p>
+							</div>
+							<!-- </div> -->
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div ui-calendar="uiConfig.calendar" class="col-md-12 calendar" ng-model="nCtrl.activities" id="newActivityCalendar"></div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<%= render "app/layouts/ajax_form_actions", modal: true, angular: true, formid: "new_activity", transaltions: "activities.new" %>
+				<button type="button" class="btn btn-success" ng-click="nCtrl.changeActivityStatus($event, 2)" ng-show="nCtrl.new_event.id != 0 && (nCtrl.new_event.status == 0 || nCtrl.new_event.status == 1 || nCtrl.new_event.status == null)">
+					<i class="fa fa-check-square-o" aria-hidden="true"></i>
+				</button>
+				<button type="button" class="btn btn-info" ng-click="nCtrl.changeActivityStatus($event, 0)" ng-show="nCtrl.new_event.id != 0 && nCtrl.new_event.status == 2">
+					<i class="fa fa-square-o" aria-hidden="true"></i>
+				</button>
+				<button type="button" class="btn btn-danger" ng-click="nCtrl.changeActivityStatus($event, 3)" ng-show="nCtrl.new_event.id != 0">
+					<i class="fa fa-trash-o" aria-hidden="true"></i>
+				</button>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

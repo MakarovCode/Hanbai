@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  funnel: one
+  stage: one
+  deal: one
+  activity: one
+  action_text: MyText
+
+two:
+  user: two
+  funnel: two
+  stage: two
+  deal: two
+  activity: two
+  action_text: MyText

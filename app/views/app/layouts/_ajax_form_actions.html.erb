@@ -1,0 +1,44 @@
+<% angular = nil unless defined?(angular)%>
+<% modal = nil unless defined?(modal)%>
+
+<% if  angular == true %>
+	<div class="col-md-12 alert alert-info info-message hide text-left" ng-show="loading == true">
+		Puedes cerrar esta ventana y seguir trabajando...
+	</div>
+<% else %>
+	<div class="col-md-12 alert alert-info info-message hide text-left">
+		Puedes cerrar esta ventana y seguir trabajando...
+	</div>
+<% end %>
+
+<% if modal == true && angular.nil? %>
+	<button type="button" class="btn btn-default cancel-button" data-dismiss="modal">
+		<%= t("#{transaltions}.cancel_action") %>
+	</button>
+	<button type="submit" class="btn btn-primary main-button" id="main-button" data-form="#<%= formid %>">
+		<%= t("#{transaltions}.main_action") %>
+		<i class="fa fa-circle-o-notch fa-spin hide loader" aria-hidden="true"></i>
+	</button>
+<% elsif angular == true %>
+	<% if modal == true %>
+		<button type="button" class="btn btn-default cancel-button" data-dismiss="modal">
+			<%= t("#{transaltions}.cancel_action") %>
+		</button>
+	<% else %>
+		<button type="button" class="btn btn-default cancel-button">
+			<%= t("#{transaltions}.cancel_action") %>
+		</button>
+	<% end %>
+	<button type="submit" class="btn btn-primary main-button" id="main-button" data-form="#<%= formid %>" ng-disabled="loading == true" ng-click="save();">
+		<%= t("#{transaltions}.main_action") %>
+		<i class="fa fa-circle-o-notch fa-spin loader" aria-hidden="true" ng-show="loading == true"></i>
+	</button>
+<% else %>
+	<button type="button" class="btn btn-default cancel-button">
+		<%= t("#{transaltions}.cancel_action") %>
+	</button>
+	<button type="submit" class="btn btn-primary main-button" id="main-button" data-form="#<%= formid %>">
+		<%= t("#{transaltions}.main_action") %>
+		<i class="fa fa-circle-o-notch fa-spin hide loader" aria-hidden="true"></i>
+	</button>
+<% end %>

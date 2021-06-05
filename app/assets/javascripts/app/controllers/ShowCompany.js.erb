@@ -1,0 +1,81 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+		var module = angular.module("show-company-module", ['ui.calendar', 'ui.tinymce']);
+
+	module.controller('ShowCompanyController', ['$http', '$scope', 'uiCalendarConfig', function ($http, $scope, uiCalendarConfig) {
+		var self = this;
+		this.company = null;
+
+		$("#modal-show-company").on("shown.bs.modal", function(e){
+			var data_company = $("#modal-show-company").data("company");
+
+			$scope.$apply(function(){
+				if (data_company != null){
+					self.company = data_company;
+					$scope.timeline_object_type = "company";
+					$scope.timeline_object = self.company;
+					self.render();
+				}
+			});
+
+		});
+
+		$("#modal-show-company").on('hidden.bs.modal', function (e) {
+			$("#modal-show-company").data("company", null);
+			$scope.$apply(function(){
+				// $scope.activities = [];
+				// self.company = null;
+				// $scope.timeline_object_type = null;
+				// $scope.timeline_object = null;
+
+			});
+		});
+
+		/* Autor: Simon Correa
+	   *
+	   * Fecha creacion: 2016-11-21
+	   *
+	   * Autor actualizacion:
+	   *
+	   * Fecha actualizacion:
+	   *
+	   *
+	  */
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+		}
+
+		this.render = function(){
+			new Chartkick.PieChart("deals", [["Ganados", self.company.won_deals_count], ["Pendientes", self.company.open_deals_count], ["Perdidos", self.company.closed_deal_count]], {donut: true, legend: false})
+			new Chartkick.PieChart("activities", [["Realizadas", self.company.done_activities_count], ["Pendientes", self.company.undone_activities_count]], {donut: true, legend: false})
+		}
+
+		$scope.getCompany = function(company, selected){
+			self.getCompany(company, selected);
+		}
+
+		this.getCompany = function(company, selected){
+			// event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				full_data: true
+			};
+
+			$http.get("/app/api/v1/organizations/"+this.company.id+".json", {params: params}).then(
+				function(res, status){
+					if (selected == true){
+						self.company = res.data;
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+	}]);
+})();

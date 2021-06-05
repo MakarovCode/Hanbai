@@ -1,0 +1,138 @@
+<div class="row" ng-controller="FunnelsController as fCtrl" ng-show="fCtrl.view_loaded == true" ng-cloak style="position:relative;">
+
+	<div class="scrollTriggers" id="triggerRight"></div>
+	<div class="col-md-12 funnels-header" style="border-bottom: 1px solid #e3e3e3; padding-bottom: 10px; position: fixed;" ng-init="fCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token %>', '<%= current_user.name %>')">
+		<span class="btn-group">
+			<button type="button" class="btn btn-default btn-transparent" ng-click="fCtrl.showList($event);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Lista de tus embudos." data-content="Abre la lista de todos tus embudos, puedes cambiar de embudo solo dando click sobre el que quieras ver.">
+				<i class="fa fa-filter"></i>
+				Embudos
+			</button>
+			<button type="button" class="btn btn-default btn-transparent" ng-click="fCtrl.newStage();" ng-disabled="fCtrl.new_stage_on == true" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Nueva etapa." data-content="Te permite crear una nueva etapa sobre este embudo.">
+				<i class="fa fa-plus"></i> Etapa
+			</button>
+			<button type="button"class="btn btn-default btn-transparent" data-target=".modal-new-person" data-toggle="modal">
+				<i class="fa fa-plus"></i> Contacto <i class="fa fa-users"></i>
+			</button>
+			<button type="button" style="margin-right: 10px;" class="btn btn-default btn-transparent" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Métricas del embudo." data-content="Muestra los porcentajes de avance y ventas generales.." ng-click="fCtrl.openGraphs($event);">
+				<i class="fa fa-line-chart"></i> Métricas
+			</button>
+
+		</span>
+		<span style="margin-left: 20px; font-size: 16px; font-weight: bold; width: 500px;" ng-hide="fCtrl.editing_funnel == true" ng-click="fCtrl.showEditFunnel($event);">
+			{{fCtrl.selected_funnel.name}}
+		</span>
+		<span style="margin-left: 20px; font-size: 16px; font-weight: bold; width: 200px;" ng-show="fCtrl.editing_funnel == true">
+			<input type="text" class="btn-transparent" ng-model="fCtrl.selected_funnel.name" ng-show="fCtrl.editing_funnel == true" ng-blur="fCtrl.updateFunnel($event);" ng-click="$event.stopPropagation();" style="color: #000;"/>
+		</span>
+		<span style="margin-left: 20px; font-size: 16px; font-weight: bold; width: 200px;">
+			<input type="text" id="input-search" class="btn-transparent" ng-model="fCtrl.search_deals_term"  style="color: #000;" placeholder="Buscar en Embudo..."/>
+		</span>
+		<span style="margin-left: 20px; font-size: 16px; font-weight: bold; width: 200px;">
+			<button type="button" class="btn btn-success" ng-click="fCtrl.showWonDeals($event)">
+				<i class="fa fa-handshake-o"></i>
+				Ver Ganados
+			</button>
+		</span>
+		<button type="button" class="btn btn-default pull-right btn-transparent" ng-click="fCtrl.showMenu($event);" style="z-index: 9999;" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" title="Menu de embudo." data-content="Abre el menu de este embudo, acá encontrarás tus negocios ganados, perdidos y archivados, también puedes cambiar el fondo de este embudo.">
+			<i class="fa fa-ellipsis-h"></i>
+			Menu
+		</button>
+	</div>
+	<div class="col-md-12 funnels" id="stages" style="margin-top: 50px;">
+		<section class="list" ng-repeat="stage in fCtrl.stages" data-stage="{{stage}}" id="stage-{{stage.id}}" data-list="stages" on-last-repeat>
+			<header  ng-hide="stage.id == null || stage.editing == true">
+				<div ng-click="fCtrl.editStage($event, stage);" class="handle">
+					{{stage.name}}
+					<span class="input-group-btn" ng-class="{'pull-right': !fCtrl.isLastStage(stage), 'pull-left last-stage-button': fCtrl.isLastStage(stage)}">
+						<button type="button" class="btn btn-xs btn-transparent pull-right dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="$event.stopPropagation();">
+							<i class="fa fa-ellipsis-h"></i>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li ng-hide="stage.destroying == true" ng-click="fCtrl.destroyStage($event, stage);"><a href="#">Archivar lista</a></li>
+							<li ng-show="stage.destroying == true" ng-click="fCtrl.destroyStage($event, stage);"><a href="#">Da click para confirmar...</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#">Mas funcionalidad pronto...</a></li>
+						</ul>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col-xs-2" style="margin-top: 7px; margin-left: -40px;" ng-show="fCtrl.isLastStage(stage)">
+						<button type="button" class="btn btn-transparent btn-xs" ng-click="fCtrl.changeStageHeaderType(stage, 1)" ng-hide="stage.header_type == 1">
+							<i class="fa fa-usd"></i>
+						</button>
+						<button type="button" class="btn btn-transparent btn-xs" ng-click="fCtrl.changeStageHeaderType(stage, null)" ng-show="stage.header_type == 1">
+							<i class="fa fa-calendar-check-o"></i>
+						</button>
+					</div>
+					<div class="col-xs-10">
+						<div class="progress" style="margin-top: 10px; margin-bottom: 0px" ng-hide="stage.header_type == 1">
+							<div class="progress-bar " ng-class="{'progress-bar-danger': stage.activities_percent < 50, 'progress-bar-warning': (stage.activities_percent >= 50 && stage.activities_percent < 100), 'progress-bar-success': stage.activities_percent == 100}" role="progressbar" aria-valuenow="{{stage.activities_percent}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{stage.activities_percent}}%;" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Actividades completadas" data-content="Porcentaje de actividades realizadas en esta etapa.">
+								<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {{stage.activities_percent}}%
+							</div>
+						</div>
+						<div class="btn btn-group-vertical" ng-show="stage.header_type == 1">
+							<!-- <button type="button" class="btn btn-xs" ng-class="{'btn-success': stage.total_show_type == 1, 'btn-danger': stage.total_show_type == 2, 'btn-primary': stage.total_show_type == 0 || stage.total_show_type == null}" ng-click="fCtrl.changeStageTotalsType(stage, stage.total_show_type)">
+								<i class="fa fa-handshake-o" ng-show="stage.total_show_type == 1"></i>
+								<i class="fa fa-hand-o-down" ng-show="stage.total_show_type == 2"></i>
+								<i class="fa fa-clock-o" ng-show="stage.total_show_type == 0"></i>
+							</button> -->
+							<button type="button" class="btn btn-xs btn-transparent">
+								{{ fCtrl.sumStageValues(stage, stage.total_show_type).total | currency }} - <span class="text-success" style="font-weight: bold;">{{fCtrl.sumStageValues(stage, stage.total_show_type).commission | currency}}</span>
+							</button>
+						</div>
+					</div>
+					<div class="col-xs-2" style="margin-top: 7px;" ng-hide="fCtrl.isLastStage(stage)">
+						<button type="button" class="btn btn-transparent btn-xs" ng-click="fCtrl.changeStageHeaderType(stage, 1)" ng-hide="stage.header_type == 1">
+							<i class="fa fa-usd"></i>
+						</button>
+						<button type="button" class="btn btn-transparent btn-xs" ng-click="fCtrl.changeStageHeaderType(stage, null)" ng-show="stage.header_type == 1">
+							<i class="fa fa-calendar-check-o"></i>
+						</button>
+					</div>
+				</div>
+			</header>
+			<header ng-show="stage.id == null || stage.editing == true">
+				<div class="input-group">
+					<input type="text" class="form-control input-sm" placeholder="Nueva etapa" ng-model="stage.name" ng-blur="fCtrl.updateStage(stage);" ng-click="$event.stopPropagation();"/>
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-sm btn-transparent dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="$event.stopPropagation();">
+							<i class="fa fa-ellipsis-h"></i>
+						</button>
+						<ul class="dropdown-menu">
+							<li ng-hide="stage.destroying == true" ng-click="fCtrl.destroyStage($event, stage);"><a href="#">Archivar lista</a></li>
+							<li ng-show="stage.destroying == true" ng-click="fCtrl.destroyStage($event, stage);"><a href="#">Da click para confirmar...</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#">Mas funcionalidad pronto...</a></li>
+						</ul>
+					</span>
+				</div>
+			</header>
+			<div id="list-{{stage.id}}" class="card-cont" data-stage="{{stage}}">
+				<article id="card-{{deal.id}}" class="card" ng-repeat="deal in stage.deals" data-list="deals" on-last-repeat data-deal="{{deal}}" ng-click="fCtrl.showDeal($event, deal);" ng-show="(fCtrl.search_deals_term == null || fCtrl.search_deals_term == '' || deal.title.indexOf(fCtrl.search_deals_term) !== -1 || (deal.person != null && deal.person.name.indexOf(fCtrl.search_deals_term) !== -1))">
+					<%= render "deal_card"%>
+					<%= render "new_deal" %>
+				</article>
+			</div>
+			<footer ng-hide="stage.id == null" ng-click="fCtrl.newDeal(stage)" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Nuevo negocio." data-content="Te permite crear un nuevo negocio sobre esta etapa.">
+				<i class="fa fa-plus"></i> Negocio...
+			</footer>
+			<footer  ng-show="stage.id == null">
+				<button type="button" class="btn btn-primary" ng-click="fCtrl.createStage(stage)">
+					<i class="fa fa-plus"></i> Guardar
+				</button>
+				<button type="button" class="btn btn-danger" ng-click="fCtrl.cancelNewStage()">
+					<i class="fa fa-ban"></i> Cancelar
+				</button>
+			</footer>
+		</section>
+	</div>
+	<%= render "list" %>
+	<%= render "menu" %>
+	<%= render "graphs" %>
+	<%= render "expire" %>
+	<%= render "/app/deals/show" %>
+	<%= render "/app/activities/new" %>
+	<%= render "/app/people/new" %>
+	<%= render "real_time_messages" %>
+	<%= render "modal_extra_fields" %>
+</div>

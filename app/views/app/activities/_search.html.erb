@@ -1,0 +1,49 @@
+
+<div class="modal fade modal-search-activities" tabindex="-1" role="dialog" aria-labelledby="modal-search-activities-label">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-search-activities-label"><%= t("activities.search.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group row">
+							<label for="search-term" class="col-sm-2">Nombre/Contacto/Organización</label>
+							<div class="col-sm-12">
+								<input type="text" ng-model="cCtrl.search_term" class="form-control"/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-4">Pendientes</label>
+							<div class="col-sm-8 text-right">
+								<label class="switch"><input type="checkbox" ng-model="cCtrl.filters[0]" /><i></i></label>
+							</div>
+							<label class="col-sm-4">Vencidos</label>
+							<div class="col-sm-8 text-right">
+								<label class="switch"><input type="checkbox" ng-model="cCtrl.filters[1]" /><i></i></label>
+							</div>
+							<label class="col-sm-4">Realizados</label>
+							<div class="col-sm-8 text-right">
+								<label class="switch"><input type="checkbox" ng-model="cCtrl.filters[2]" /><i></i></label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger clean-button" data-dismiss="modal" ng-click="cCtrl.cleanFilters()">
+					<%= t("activities.search.clean_action") %>
+				</button>
+				<button type="button" class="btn btn-default cancel-button" data-dismiss="modal">
+					<%= t("activities.search.cancel_action") %>
+				</button>
+				<button type="submit" class="btn btn-primary main-button" data-dismiss="modal" ng-click="cCtrl.applyFilters()">
+					<%= t("activities.search.main_action") %>
+					<i class="fa fa-circle-o-notch fa-spin hide loader" aria-hidden="true"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

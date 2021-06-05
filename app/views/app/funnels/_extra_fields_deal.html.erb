@@ -1,0 +1,5 @@
+<div ng-repeat="extra_field in fCtrl.extra_fields">
+  <label>{{extra_field.name}}</label>
+  <input type="hidden" ng-model="deal.extra_field" ng-value="extra_field">
+  <input type="text" class="form-control" ng-model="deal[extra_field.model_name_id]">
+</div>

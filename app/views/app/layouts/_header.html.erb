@@ -1,0 +1,125 @@
+<section id="header" class="top-header">
+	<header class="clearfix">
+		<!--
+		<a href="#/" data-toggle-min-nav
+		class="toggle-min"
+		><i class="fa fa-bars"></i></a>
+	-->
+
+	<!-- Logo -->
+	<div class="logo">
+		<a href="#/">
+			<%= image_tag @info.logo.url, style: "height: 45px; margin-top: -10px;" %>
+		</a>
+	</div>
+
+	<!-- needs to be put after logo to make it working-->
+	<!--
+	<div class="menu-button" toggle-off-canvas>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+	<span class="icon-bar"></span>
+</div>
+-->
+
+<div class="top-nav">
+	<ul class="nav-left list-unstyled">
+		<!-- <li class="dropdown" dropdown is-open="isopeBell">
+		<a href="javascript:;" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+		<i class="fa fa-bell-o nav-icon"></i>
+		<span class="badge badge-warning">3</span>
+	</a>
+	<div class="dropdown-menu with-arrow panel panel-default">
+	<div class="panel-heading">
+	You have 3 notifications.
+</div>
+<ul class="list-group">
+<li class="list-group-item">
+<a href="javascript:;" class="media">
+<span class="media-left media-icon">
+<span class="round-icon sm bg-success"><i class="fa fa-bell-o"></i></span>
+</span>
+<div class="media-body">
+<span class="block">New tasks needs to be done</span>
+<span class="text-muted block">2min ago</span>
+</div>
+</a>
+</li>
+<li class="list-group-item">
+<a href="javascript:;" class="media">
+<span class="media-left media-icon">
+<span class="round-icon sm bg-info"><i class="fa fa-bell-o"></i></span>
+</span>
+<div class="media-body">
+<span class="block">Change your password</span>
+<span class="text-muted">3 hours ago</span>
+</div>
+</a>
+</li>
+<li class="list-group-item">
+<a href="javascript:;" class="media">
+<span class="media-left media-icon">
+<span class="round-icon sm bg-danger"><i class="fa fa-bell-o"></i></span>
+</span>
+<div class="media-body">
+<span class="block">New feature added</span>
+<span class="text-muted">9 hours ago</span>
+</div>
+</a>
+</li>
+</ul>
+<div class="panel-footer">
+<a href="javascript:;">Show all notifications.</a>
+</div>
+</div>
+</li> -->
+</ul>
+
+<ul class="nav-right pull-right list-unstyled">
+	<li>
+		<% if current_user.is_gold_expiring %>
+			<%= link_to distance_of_time_in_words(Time.now, current_user.last_payment.end_date), main_app.app_user_account_index_path(current_user), class: "btn btn-danger" %>
+		<% elsif current_user.is_gold %>
+			<%= link_to "javascript:void(0)", class: "btn btn-warning" do %>
+				<i class="fa fa-star"></i> Gold
+			<% end %>
+		<% end %>
+	</li>
+	<li>
+		<%= link_to "Blog y Tips", main_app.blog_posts_path, target: "_blank" %>
+	</li>
+	<li class="text-normal nav-profile">
+		<a href="javascript:;" id="profile-drop" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<% if current_user.image.url.nil? %>
+			<%= gravatar_image_tag(current_user.email, alt: "#{current_user.email}", :gravatar => { :rating => 'pg' } , class: "img-circle img30_30") %>
+			<% else %>
+			<%= image_tag current_user.image.square, style: "width: 30px; border-radius: 100px;" %>
+			<% end %>
+		</a>
+		<ul class="dropdown-menu dropdown-menu-right with-arrow pull-right">
+			<li>
+				<%= link_to main_app.edit_app_user_path(current_user) do %>
+				<i class="fa fa-address-card-o"></i>
+				Mi Perfil
+				<% end %>
+			</li>
+			<li>
+				<%= link_to main_app.destroy_user_session_path, method: :delete do %>
+				<i class="fa fa-sign-out"></i>
+				Cerrar sesión
+				<% end %>
+			</li>
+		</ul>
+	</li>
+
+</ul>
+</div>
+
+</header>
+</section>
+<script>
+$('.dropdown-toggle').dropdown();
+// $('body').click(function(){
+// 	$("#profile-drop").dropdown('toggle');
+// });
+</script>

@@ -1,0 +1,70 @@
+<div class="row">
+	<div class="col-md-12">
+		<section class="panel panel-default">
+			<div class="panel-heading">
+				<strong>
+					<span class="fa fa-building-o"></span>
+					<%= t("organizations.title") %>
+				</strong>
+			</div>
+			<div class="panel-body">
+				<actions class="pull-left columns btn-group">
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-new-company">
+						<i class="fa fa-plus "></i>
+						Nueva organización
+					</button>
+					<button type="button" class="btn btn-success" data-toggle="modal" data-target=".modal-import-company">
+						<i class="fa fa-file-excel-o  "></i>
+						Importar Excel
+					</button>
+				</actions>
+				<table id="company-table"
+					   class="bootstrap-table"
+					   data-toggle="table"
+					   data-url="<%= app_api_v1_organizations_path(format: :json)%>"
+					   data-search="true"
+					   data-search-time-out="500"
+					   data-pagination="true"
+					   data-page-list="[10,25,50,100]"
+					   data-show-refresh="true"
+					   data-locale="es-ES"
+					   data-show-export="true"
+					   data-export-types="['excel', 'csv', 'sql']"
+					   data-mobile-responsive="true"
+					   data-min-width="768"
+					   data-show-url="/app/api/v1/organizations/"
+					   data-update-url="/app/api/v1/organizations/"
+					   data-destroy-url="/app/api/v1/organizations/"
+					   data-unique-id="id"
+					   data-new-form="#new_company"
+					   data-edit-form="#edit_company"
+					   data-delete-form="#delete_company"
+					   data-object="company">
+					<thead>
+						<tr>
+							<th data-field="id" data-sortable="true">ID</th>
+							<th data-field="name" data-sortable="true" data-searchable="true">Nombre</th>
+							<th data-field="people_count" data-sortable="true"># de personas</th>
+							<th data-field="open_deals_count" data-sortable="true">Negocios abiertos</th>
+							<th data-field="closed_deal_count" data-sortable="true">Negocios cerrados</th>
+							<th data-field="undone_activities_count" data-sortable="true">Actividades pendientes</th>
+							<th data-field="created_at" data-sortable="true">Creado en</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</section>
+	</div>
+</div>
+
+<script>
+	tableCallbacks();
+</script>
+
+<%= render "show" %>
+<%= render "new" %>
+<%= render "edit" %>
+<%= render "delete" %>
+<%= render "import" %>
+<%= render "/app/activities/new" %>

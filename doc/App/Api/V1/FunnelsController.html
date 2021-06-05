@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class App::Api::V1::FunnelsController - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../";
+</script>
+
+<script src="../../../js/jquery.js"></script>
+<script src="../../../js/darkfish.js"></script>
+
+<link href="../../../css/fonts.css" rel="stylesheet">
+<link href="../../../css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../../table_of_contents.html#pages">Pages</a>
+    <a href="../../../table_of_contents.html#classes">Classes</a>
+    <a href="../../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="../ApiController.html">App::Api::ApiController</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-create">#create</a>
+    
+    <li ><a href="#method-i-destroy">#destroy</a>
+    
+    <li ><a href="#method-i-index">#index</a>
+    
+    <li ><a href="#method-i-invite_member">#invite_member</a>
+    
+    <li ><a href="#method-i-remove_member">#remove_member</a>
+    
+    <li ><a href="#method-i-show">#show</a>
+    
+    <li ><a href="#method-i-update">#update</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-App::Api::V1::FunnelsController">
+  <h1 id="class-App::Api::V1::FunnelsController" class="class">
+    class App::Api::V1::FunnelsController
+  </h1>
+
+  <section class="description">
+    
+<p>Esta clase representa los embudos de un usuario.</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-create" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Crea un embudo sobre el usuario en sesión</p>
+
+<p><strong>POST: /api/v1/funnels.json</strong></p>
+
+<h3 id="method-i-create-label-Params-3A">Params:<span><a href="#method-i-create-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+funnel - {name: &quot;Pokeballs Business&quot;, color: &quot;#ff0000&quot;}
+   default_stages - Si true crea las etapas por defecto (Contacto, Contacto establecido, Establecer necesidades, Propuesta)</pre>
+
+<h2 id="method-i-create-label-Ejemplos">Ejemplos<span><a href="#method-i-create-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-create-label-Status+Ok">Status Ok<span><a href="#method-i-create-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-create-label-Respuesta">Respuesta<span><a href="#method-i-create-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Embudo creado correctamente&quot;, id: 1}</pre>
+
+<h3 id="method-i-create-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-create-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-create-label-Respuesta">Respuesta<span><a href="#method-i-create-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-create-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-create-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 411</pre>
+
+<h3 id="method-i-create-label-Respuesta">Respuesta<span><a href="#method-i-create-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;No se pudo crear el embudo&quot;, errors: &quot;Nombre no puede estar en blanco&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="create-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create</span> 
+        <span class="ruby-identifier">funnel</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels</span>.<span class="ruby-identifier">new</span> <span class="ruby-identifier">params_permit</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">save</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:default_stages</span>] <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span>
+                        <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">stages</span>.<span class="ruby-identifier">create</span>([{<span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Contacto&quot;</span>, <span class="ruby-identifier">priority</span><span class="ruby-operator">:</span> <span class="ruby-value">1</span>}, {<span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Contacto establecido&quot;</span>, <span class="ruby-identifier">priority</span><span class="ruby-operator">:</span> <span class="ruby-value">2</span>}, {<span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Establecer necesidades&quot;</span>, <span class="ruby-identifier">priority</span><span class="ruby-operator">:</span> <span class="ruby-value">3</span>}, {<span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Propuesta&quot;</span>, <span class="ruby-identifier">priority</span><span class="ruby-operator">:</span> <span class="ruby-value">4</span>}])
+                <span class="ruby-keyword">end</span>
+                <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">user_funnels</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">funnel_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">permission</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;owner&quot;</span>)
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Embudo creado correctamente&quot;</span>, <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">id</span>}
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">411</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;No se pudo crear el embudo&quot;</span>, <span class="ruby-identifier">errors</span><span class="ruby-operator">:</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">errors</span>.<span class="ruby-identifier">full_messages</span>.<span class="ruby-identifier">to_sentence</span>}
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-destroy" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">destroy</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Elimina un embudo sobre el usuario en sesión</p>
+
+<p><strong>DELETE: /api/v1/funnels/&lt;id&gt;.json</strong></p>
+
+<h3 id="method-i-destroy-label-Params-3A">Params:<span><a href="#method-i-destroy-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+id - ID</pre>
+
+<h2 id="method-i-destroy-label-Ejemplos">Ejemplos<span><a href="#method-i-destroy-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-destroy-label-Status+Ok">Status Ok<span><a href="#method-i-destroy-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-destroy-label-Respuesta">Respuesta<span><a href="#method-i-destroy-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Embudo eliminado correctamente&quot;}</pre>
+
+<h3 id="method-i-destroy-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-destroy-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-destroy-label-Respuesta">Respuesta<span><a href="#method-i-destroy-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-destroy-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-destroy-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 411</pre>
+
+<h3 id="method-i-destroy-label-Respuesta">Respuesta<span><a href="#method-i-destroy-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;No se pudo eliminar el embudo&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="destroy-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 202</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span> 
+        <span class="ruby-identifier">funnel</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+                <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:status</span>, <span class="ruby-value">0</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Embudo restaurado correctamente&quot;</span>}
+        <span class="ruby-keyword">else</span> 
+                <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:status</span>, <span class="ruby-value">1</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Embudo pasado a la papelera correctamente&quot;</span>}
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-index" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">index</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Devuelve la lista de embudos del usuario en sesión</p>
+
+<p><strong>GET: /api/v1/people.json</strong></p>
+
+<h3 id="method-i-index-label-Params-3A">Params:<span><a href="#method-i-index-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación</pre>
+
+<h2 id="method-i-index-label-Ejemplos">Ejemplos<span><a href="#method-i-index-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-index-label-Status+Ok">Status Ok<span><a href="#method-i-index-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-index-label-Respuesta">Respuesta<span><a href="#method-i-index-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; [
+             {
+                   &quot;id&quot;: 2,
+                   &quot;name&quot;: &quot;Pikachu&quot;,
+                   &quot;color&quot;: &quot;#ff0000&quot;
+             }
+      ]</pre>
+
+<h3 id="method-i-index-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-index-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-index-label-Respuesta">Respuesta<span><a href="#method-i-index-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="index-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">index</span> 
+        <span class="ruby-ivar">@full_data</span> = <span class="ruby-keyword">false</span>
+        <span class="ruby-ivar">@funnels</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">actives</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-invite_member" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">invite_member</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Invita un usuario a un embudo sobre el usuario en sesión</p>
+
+<p><strong>POST: /api/v1/funnels/&lt;id&gt;/invite_member.json</strong></p>
+
+<h3 id="method-i-invite_member-label-Params-3A">Params:<span><a href="#method-i-invite_member-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+id - ID
+   user_id - ID del usuario a adicionar</pre>
+
+<h2 id="method-i-invite_member-label-Ejemplos">Ejemplos<span><a href="#method-i-invite_member-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-invite_member-label-Status+Ok">Status Ok<span><a href="#method-i-invite_member-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-invite_member-label-Respuesta">Respuesta<span><a href="#method-i-invite_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Usuario invitado a embudo correctamente&quot;}</pre>
+
+<h3 id="method-i-invite_member-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-invite_member-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-invite_member-label-Respuesta">Respuesta<span><a href="#method-i-invite_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-invite_member-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-invite_member-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 411</pre>
+
+<h3 id="method-i-invite_member-label-Respuesta">Respuesta<span><a href="#method-i-invite_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;No se pudo invitar al usuario&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="invite_member-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 246</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">invite_member</span> 
+        <span class="ruby-identifier">permission</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:permission</span>]
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">permission</span>.<span class="ruby-identifier">nil?</span>
+                <span class="ruby-identifier">permission</span> = <span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_READ_ALL</span>
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-identifier">funnel</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">has_permission</span>([<span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_OWNER</span>, <span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_WRITE_ALL</span>]).<span class="ruby-identifier">find</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+        <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:user_id</span>], <span class="ruby-identifier">permission</span><span class="ruby-operator">:</span> <span class="ruby-identifier">permission</span>)
+
+        <span class="ruby-comment">#TODO: Enviar correo de invitación</span>
+        <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Usuario a embudo invitado correctamente&quot;</span>}
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-remove_member" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">remove_member</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Remueve un usuario de un embudo sobre el usuario en sesión</p>
+
+<p><strong>POST: /api/v1/funnels/&lt;id&gt;/remove_member.json</strong></p>
+
+<h3 id="method-i-remove_member-label-Params-3A">Params:<span><a href="#method-i-remove_member-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+id - ID
+   user_id - ID del usuario a adicionar</pre>
+
+<h2 id="method-i-remove_member-label-Ejemplos">Ejemplos<span><a href="#method-i-remove_member-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-remove_member-label-Status+Ok">Status Ok<span><a href="#method-i-remove_member-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-remove_member-label-Respuesta">Respuesta<span><a href="#method-i-remove_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Usuario removido de embudo correctamente&quot;}</pre>
+
+<h3 id="method-i-remove_member-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-remove_member-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-remove_member-label-Respuesta">Respuesta<span><a href="#method-i-remove_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-remove_member-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-remove_member-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 411</pre>
+
+<h3 id="method-i-remove_member-label-Respuesta">Respuesta<span><a href="#method-i-remove_member-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;No se pudo remover el usuario&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="remove_member-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 291</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">remove_member</span> 
+        <span class="ruby-identifier">funnel</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">has_permission</span>([<span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_OWNER</span>, <span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_WRITE_ALL</span>]).<span class="ruby-identifier">find</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+        <span class="ruby-identifier">user_funnel</span> = <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">user_funnels</span>.<span class="ruby-identifier">find_by_user_id</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:user_id</span>])
+
+        <span class="ruby-keyword">unless</span> <span class="ruby-identifier">user_funnel</span>.<span class="ruby-identifier">nil?</span>
+                <span class="ruby-comment">#TODO: Enviar correo de invitación</span>
+                <span class="ruby-identifier">user_funnel</span>.<span class="ruby-identifier">destroy</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Usuario removido de embudo correctamente&quot;</span>}
+        <span class="ruby-keyword">else</span> 
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;No se pudo remover el usuario&quot;</span>}
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-show" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">show</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Devuelve un embudo del usuario en sesión por un ID</p>
+
+<p><strong>GET: /api/v1/funnels/&lt;id&gt;.json</strong></p>
+
+<h3 id="method-i-show-label-Params-3A">Params:<span><a href="#method-i-show-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+full_data - Si true envía los Stages (etapas), Deals (negocios) y Activities (actividades).</pre>
+
+<h2 id="method-i-show-label-Ejemplos">Ejemplos<span><a href="#method-i-show-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-show-label-Status+Ok">Status Ok<span><a href="#method-i-show-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-show-label-Respuesta">Respuesta<span><a href="#method-i-show-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt;   {
+           &quot;id&quot;: 2,
+           &quot;name&quot;: &quot;Pikachu&quot;,
+           &quot;color&quot;: &quot;#ff0000&quot;
+        }</pre>
+
+<h3 id="method-i-show-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-show-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-show-label-Respuesta">Respuesta<span><a href="#method-i-show-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-show-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-show-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 404</pre>
+
+<h3 id="method-i-show-label-Respuesta">Respuesta<span><a href="#method-i-show-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Recurso no encontrado&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="show-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 77</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">show</span> 
+        <span class="ruby-ivar">@full_data</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:full_data</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;true&quot;</span>
+        <span class="ruby-ivar">@funnels</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+        <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;index&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-update" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">update</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Actualiza un embudo sobre el usuario en sesión</p>
+
+<p><strong>PUT: /api/v1/funnels/&lt;id&gt;.json</strong></p>
+
+<h3 id="method-i-update-label-Params-3A">Params:<span><a href="#method-i-update-label-Params-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>user_uuid - Usuario UUID
+user_token - Usuario Token de autenticación
+funnel - {name: &quot;Pokeballs Business&quot;, color: &quot;#ff0000&quot;}</pre>
+
+<h2 id="method-i-update-label-Ejemplos">Ejemplos<span><a href="#method-i-update-label-Ejemplos">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="method-i-update-label-Status+Ok">Status Ok<span><a href="#method-i-update-label-Status+Ok">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 200</pre>
+
+<h3 id="method-i-update-label-Respuesta">Respuesta<span><a href="#method-i-update-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Embudo actualizado correctamente&quot;, id: 1}</pre>
+
+<h3 id="method-i-update-label-Status+Sin+autorizaci-C3-B3n">Status Sin autorización<span><a href="#method-i-update-label-Status+Sin+autorizaci-C3-B3n">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 422</pre>
+
+<h3 id="method-i-update-label-Respuesta">Respuesta<span><a href="#method-i-update-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;Necesitas iniciar sesión o registrarte para continuar&quot;}</pre>
+
+<h3 id="method-i-update-label-Status+No+encontrado">Status No encontrado<span><a href="#method-i-update-label-Status+No+encontrado">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; 411</pre>
+
+<h3 id="method-i-update-label-Respuesta">Respuesta<span><a href="#method-i-update-label-Respuesta">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>=&gt; {&quot;message&quot;: &quot;No se pudo actualizar el embudo&quot;, errors: &quot;Nombre no puede estar en blanco&quot;}</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="update-source">
+            <pre><span class="ruby-comment"># File app/controllers/app/api/v1/funnels_controller.rb, line 161</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>
+        <span class="ruby-identifier">funnel</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">funnels_as_member</span>.<span class="ruby-identifier">has_permission</span>([<span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_OWNER</span>, <span class="ruby-constant">Funnel</span><span class="ruby-operator">::</span><span class="ruby-constant">PERMISSION_WRITE_ALL</span>]).<span class="ruby-identifier">find</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">update</span> <span class="ruby-identifier">params_permit</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">200</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Embudo actualizado correctamente&quot;</span>, <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">id</span>}
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-identifier">render</span> <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-value">411</span>, <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;No se pudo actualizar el embudo&quot;</span>, <span class="ruby-identifier">errors</span><span class="ruby-operator">:</span> <span class="ruby-identifier">funnel</span>.<span class="ruby-identifier">errors</span>.<span class="ruby-identifier">full_messages</span>.<span class="ruby-identifier">to_sentence</span>}
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.3.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

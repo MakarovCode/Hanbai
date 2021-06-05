@@ -1,0 +1,53 @@
+
+<div class="modal fade modal-edit-person" tabindex="-1" role="dialog" aria-labelledby="modal-edit-person-label">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<%= form_for([:app, @person], remote: true, url: app_api_v1_people_path(:json), method: :put, html: {id: "edit_person", :"data-object" => "person"}) do |f| %>
+			<%= render "app/layouts/auth" %>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-edit-person-labe"><%= t("people.edit.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<%= render "app/layouts/ajax_form_messages" %>
+
+				<div class="form-group row">
+					<%= f.label :name, class: "col-sm-12" %>
+					<div class="col-sm-12">
+						<%= f.text_field :name, class: "form-control", autofocus: true %>
+					</div>
+				</div>
+				<div class="form-group row">
+					<%= f.label :company, class: "col-sm-12" %>
+					<div class="col-sm-12">
+						<div class="input-group">
+							<%= autocomplete_field_tag :person_company_name, '', autocomplete_app_api_v1_organizations_path, id_element: "#edit_person #person_company_id" ,
+							:"data-autocomplete-label" => "No se encontraron registros.", class: "form-control autocomplete_field"%>
+							<%= f.hidden_field :company_id, class: "autocomplete_id_field" %>
+							<span class="input-group-btn">
+								<button class="btn btn-danger" type="button" id="reset_autocomplete" style="display: none;">
+									<i class="fa fa-pencil-square-o"></i>
+								</button>
+							</span>
+						</div>
+						<div class="row" id="autocomplete-info" style="display: none;">
+							<div class="col-md-12 alert alert-info">
+								Se creará un registro con este nombre.
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<%= f.label :role, class: "col-sm-12" %>
+					<div class="col-sm-12">
+						<%= f.text_field :role, class: "form-control", autofocus: true %>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<%= render "app/layouts/ajax_form_actions", modal: true, formid: "edit_person", transaltions: "people.edit" %>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

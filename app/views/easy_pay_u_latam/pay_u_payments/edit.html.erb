@@ -1,0 +1,48 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      Datos para el pago
+      <% if @payUConfig.testing == true  %>
+        <br>(Entorno pruebas)
+      <% end %>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <form method='post' action='<%= @payUConfig.get_payu_url %>'>
+      <div class="row">
+        <%# se revisa que la clinica si tenga el permiso de pagar o las inscripciones esten abiertas para pagar %>
+
+        <div class="col-md-5 col-md-offset-1">
+          <div class="row">
+            <div class="col-md-12">
+              <%= image_tag 'easy_pay_u_latam/payu.png', style: "width: 100%"%>
+            </div>
+            <% if @payu_payment.status.nil? || @payu_payment.status == 0 %>
+            <div class="col-md-12 alert alert-info">
+              La autorización de tu pago puede tardar unos minutos, te avisaremos por correo con el estado de tu transacción.
+            </div>
+            <% end %>
+          </div>
+          <%= render "form" %>
+        </div>
+        <div class="col-md-5">
+          <div class="jumbotron text-center">
+            <h1>
+              <small>Total (<%= @payu_payment.currency%>):</small><br>
+              <%= number_to_currency @payu_payment.amount, precision: @payUConfig.currency_precision, delimiter: "." %>
+            </h1>
+            <p>
+              <%= @payu_payment.description %>
+            </p>
+            <p class="text-center" style="margin-top: 20px;">
+              <button class="btn-payu" type="submit" style="background: none; border: none;">
+                <%= image_tag "easy_pay_u_latam/btn-payu.png", style: "width: 100%;" %>
+              </button>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-md-3">
+    <label>Título</label>
+    <input type="text" ng-model="extra_field.name" class="form-control" ng-blur="eCtrl.createOrUpdateField($event, extra_field)">
+  </div>
+  <div class="col-md-3">
+    <label>Tipo</label>
+    <select class="form-control" ng-model="extra_field.kind" ng-blur="eCtrl.updateField($event, extra_field)">
+      <option value="1">Texto</option>
+      <option value="2">Número entero</option>
+      <option value="3">Número decimal</option>
+      <option value="4">Si/No</option>
+      <!-- <option value="5">Fecha</option>
+      <option value="6">Hora</option> -->
+      <option value="7">Texto largo</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label>Obligatorio</label>
+    <select class="form-control" ng-model="extra_field.required" ng-blur="eCtrl.updateField($event, extra_field)">
+      <option value="0">No</option>
+      <option value="1">Si</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label>Acciones</label> <br>
+    <button type="button" class="btn btn-danger" ng-click="eCtrl.destroyField($event, extra_field)">
+      <i class="fa fa-trash-o"></i>
+    </button>
+  </div>
+</div>

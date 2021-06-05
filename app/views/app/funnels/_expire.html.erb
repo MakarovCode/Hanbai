@@ -1,0 +1,26 @@
+<!-- Modal -->
+<div class="modal fade" id="expire-modal" tabindex="-1" role="dialog" aria-labelledby="expire-modalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="expire-modalLabel">Actualiza tu plan</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row text-center">
+          <div class="col-xs-6 col-xs-offset-3">
+            <h3>Has disfrutado de...</h3>
+            <%= image_tag @info.logo_inverse.url, style: "width: 100%;"%>
+          </div>
+          <div class="col-xs-8 col-xs-offset-2 alert alert-warning">
+            <strong>{{need_gold_message}}</strong>
+            <br><br>
+            <%= link_to main_app.app_user_account_index_path(current_user), class: "btn btn-warning btn-lg" do %>
+            <i class="fa fa-start"></i> Actualizarme a GOLD <i class="fa fa-chevron-right"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

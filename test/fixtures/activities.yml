@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  activity_type: one
+  date_and_time: 2017-02-01 10:46:30
+  duration: 1
+  notes: MyText
+  user: one
+  creator_user: one
+  deal: one
+  person: one
+  status: 1
+
+two:
+  title: MyString
+  activity_type: two
+  date_and_time: 2017-02-01 10:46:30
+  duration: 1
+  notes: MyText
+  user: two
+  creator_user: two
+  deal: two
+  person: two
+  status: 1

@@ -1,0 +1,95 @@
+<section id="contact_us">
+  <div class="container">
+    <div class="row text-center ">
+      <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+        <h2 class="head-set"><%= raw @info.contact_title %></h2>
+        <p>
+          <%= raw @info.contact_text %>
+        </p>
+        <br />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <%= form_for([:landing, @contact], url: main_app.landing_contacts_path(format: :json), remote: true, method: :post, html: {:"data-object" => "contact"}) do |f| %>
+          <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-12">
+              <%= render "app/layouts/ajax_form_messages" %>
+            </div>
+            <div class="col-md-6">
+              <label for="">Nombre *:</label>
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-lg" type="button">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <%= f.text_field :name, class: "form-control input-lg", placeholder: "Escribe tu nombre..."%>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="">Correo electrónico *:</label>
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-lg" type="button">
+                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <%= f.text_field :email, class: "form-control input-lg", placeholder: "Escribe tu email..."%>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-6">
+              <label for="">Teléfono:</label>
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-lg" type="button">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <%= f.text_field :phone, class: "form-control input-lg", placeholder: "Escribe tu teléfono..."%>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="">Asunto *:</label>
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-lg" type="button">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <%= f.text_field :subject, class: "form-control input-lg", placeholder: "Asunto..." %>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-12">
+              <label for="">Mensaje *:</label>
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default btn-lg" type="button">
+                    <i class="fa fa-comment-o" aria-hidden="true"></i>
+                  </button>
+                </span>
+                <%= f.text_area :message, class: "form-control", placeholder: "Tu mensaje aquí..." %>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary btn-lg main-button" id="main-button" data-form="new_contact">
+            		Enviar
+            		<i class="fa fa-circle-o-notch fa-spin hide loader" aria-hidden="true"></i>
+            	</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <%= raw @info.contact_info %>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extra_field: one
+  contact: one
+  value: MyString
+  kind: 1
+
+two:
+  extra_field: two
+  contact: two
+  value: MyString
+  kind: 1

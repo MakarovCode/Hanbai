@@ -1,0 +1,124 @@
+
+<div class="modal fade" id="modal-show-company" tabindex="-1" role="dialog" aria-labelledby="modal-show-company-label" ng-controller="ShowCompanyController as sCtrl" ng-init="sCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token%>')">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-show-company-label"><%= t("organizations.show.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-4">
+						<h4>
+							Información de contacto
+						</h4>
+						<p>
+							<b>Organización:</b><br>
+							<span ng-hide="sCtrl.company.company == ''">
+								{{sCtrl.company.name}}
+							</span>
+						</p>
+						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+							<div class="panel panel-default" ng-repeat="person in sCtrl.company.people">
+								<div class="panel-heading" role="tab" id="heading-{{person.id}}">
+									<h4 class="panel-title">
+										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{person.id}}" aria-expanded="true" aria-controls="collapse-{{person.id}}">
+											<i class="fa fa-user" aria-hidden="true"></i> {{person.name}} <i class="fa fa-arrow-down pull-right" aria-hidden="true"></i>
+										</a>
+									</h4>
+								</div>
+								<div id="collapse-{{person.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{person.id}}">
+									<div class="panel-body">
+										<p>
+											<b>Teléfonos:</b><br>
+											<ul ng-show="person.phones.length > 0">
+												<li ng-repeat="phone in person.phones">{{phone.phone}}</li>
+											</ul>
+											<div class="col-md-12 alert alert-info" ng-hide="person.phones.length > 0">
+												No has registrado teléfonos para este contacto
+											</div>
+										</p>
+										<p>
+											<b>Direcciones de correo:</b><br>
+											<ul ng-show="person.emails.length > 0">
+												<li ng-repeat="email in person.emails">{{email.email}}</li>
+											</ul>
+											<div class="col-md-12 alert alert-info" ng-hide="person.emails.length > 0">
+												No has registrado correos para este contacto
+											</div>
+										</p>
+										<p>
+											<b>Actividades Pendientes:</b>
+											<span ng-hide="">
+												{{person.undone_activities_count}}
+											</span>
+										</p>
+										<p>
+											<b>Actividades Realizadas:</b>
+											<span ng-hide="">
+												{{person.done_activities_count}}
+											</span>
+										</p>
+										<p>
+											<b>Negocios Pendientes:</b>
+											<span ng-hide="">
+												{{person.open_deals_count}}
+											</span>
+										</p>
+										<p>
+											<b>Negocios Ganados:</b>
+											<span ng-hide="">
+												{{person.won_deals_count}}
+											</span>
+										</p>
+										<p>
+											<b>Negocios Perdidos:</b>
+											<span ng-hide="">
+												{{person.closed_deal_count}}
+											</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<h4>
+							Estadísticas
+						</h4>
+						<div class="row">
+							<div class="col-md-6">
+								<h5>
+									Negocios
+								</h5>
+								<div id="deals" ng-hide="sCtrl.company.won_deals_count == 0 && sCtrl.company.open_deals_count == 0 && sCtrl.company.closed_deal_count == 0"></div>
+								<div class="alert alert-info" ng-show="sCtrl.company.won_deals_count == 0 && sCtrl.company.open_deals_count == 0 && sCtrl.company.closed_deal_count == 0">
+									¡Aun no tienes negocios con este contacto!
+								</div>
+							</div>
+							<div class="col-md-6">
+								<h5>
+									Actividades
+								</h5>
+								<div id="activities" ng-hide="sCtrl.company.done_activities_count == 0 && sCtrl.company.undone_activities_count == 0"></div>
+								<div class="alert alert-info" ng-show="sCtrl.company.done_activities_count == 0 && sCtrl.company.undone_activities_count == 0">
+									¡Aun no tienes actividades con este contacto!
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<%= render "/app/activities/timeline" %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default cancel-button" data-dismiss="modal">
+					<%= t("organizations.show.cancel_action") %>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

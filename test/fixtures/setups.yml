@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  remember_me_notifications: false
+  moment_to_be_remember: false
+  token_api: MyString
+
+two:
+  user: two
+  remember_me_notifications: false
+  moment_to_be_remember: false
+  token_api: MyString

@@ -1,0 +1,30 @@
+<div class="col-xs-10 col-sm-4 col-md-3 funnels-list" ng-show="fCtrl.show_list == true" ng-click="$event.stopPropagation();">
+	<br />
+	<input type="text" placeholder="Buscar embudo por nombre..." class="form-control" ng-model="fCtrl.funnel_search_term" ng-click="$event.stopPropagation();" ng-show="fCtrl.new_funnel == null;"/>
+	<button type="button" class="btn btn-primary btn-block" ng-click="fCtrl.newFunnel($event);" ng-show="fCtrl.new_funnel == null;">
+		<i class="fa fa-plus"></i> Nuevo Embudo
+	</button>
+	<div class="input-group" ng-hide="fCtrl.new_funnel == null;">
+		<input type="text" placeholder="Nombre del embudo..." class="form-control" ng-model="fCtrl.new_funnel.name" ng-click="$event.stopPropagation();" ng-hide="fCtrl.new_funnel == null;"/>
+		<span class="input-group-btn">
+			<button type="button" class="btn btn-primary" ng-click="fCtrl.createFunnel($event);">
+				<i class="fa fa-floppy-o"></i>
+			</button>
+		</span>
+		<span class="input-group-btn">
+			<button type="button" class="btn btn-danger" ng-click="fCtrl.cancelNewFunnel($event);">
+				<i class="fa fa-ban"></i>
+			</button>
+		</span>
+	</div>
+	<br />
+	<ul class="list-group">
+		<li class="list-group-item" ng-repeat="funnel in fCtrl.funnels | filter: {name: fCtrl.funnel_search_term}" ng-click="fCtrl.selectFunnel($event, funnel)">
+			<span style="width: 25px; height: 25px; background-color: {{funnel.color}}; margin-right: 10px;" class="pull-left">
+
+			</span>
+			{{funnel.name}}
+			<i class="fa fa-caret-right pull-right"></i>
+		</li>
+	</ul>
+</div>

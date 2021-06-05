@@ -1,0 +1,152 @@
+footer {
+	background: $gray-bgcolor;
+	font-family: $principal-font;
+	padding-bottom: 13px;
+	margin-top: 0px;
+	.footer-inner {
+		margin: 27px 64px 0;
+		@media (max-width: 767px) {
+			margin: 0;
+		}
+		.cols {
+	    position: relative;
+	    display: -webkit-box;
+	    display: -webkit-flex;
+	    display: -ms-flexbox;
+	    display: flex;
+	    -webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+	    margin-right: -72px;
+	    margin-bottom: 80px;
+	    @media (max-width: 767px) {
+				margin: 0;
+			}
+	    .col {
+		    margin-bottom: 32px;
+		    display: block;
+		    -webkit-box-flex: 0;
+		    -webkit-flex: 0 1 auto;
+		    -ms-flex: 0 1 auto;
+		    flex: 0 1 auto;
+		    @media (min-width: 1370px) {
+		    	margin-right: 50px;
+		    }
+		    @media (min-width: 1151px) and (max-width: 1369px) {
+		    	margin-right: 45px;
+		    }
+		     @media (max-width: 1150px) {
+		    	margin-right: 20px;
+		    }
+    		.list {
+    			list-style: none;
+    			@media (max-width: 767px) {
+    				padding-left: 20px;
+    			}
+    			.item {
+    				margin: 8px 0;
+    				font-size: 17px;
+    				text-align: left;
+    				b {
+    					color: $black-color;
+							font-weight: 600;
+    				}
+  					a {
+  						color: rgba(38,41,44,.6);
+  						font-weight: 400;
+  						&:hover {
+  							cursor: pointer;
+  						}
+  					}
+  					.circle {
+  						width: 8px;
+  						height: 8px;
+  						border-radius: 50%;
+  						display: inline-block;
+  						margin: -1px 5px 0 0;
+  					}
+  					.circle-active {
+  						background: $green-color;
+  					}
+  					select {
+  						color: rgba(38, 41, 44, 0.6);
+					    border-color: rgba(38, 41, 44, 0.6); 
+					    border: 0;
+					    border-bottom: 1px solid #aeb5b7;
+					    padding: 6px 20px 6px 10px;
+					    border-radius: 0;
+					    font-weight: 500;
+					    -webkit-appearance: none;
+					    -moz-appearance: none;
+					    appearance: none;
+					    cursor: pointer;
+					    background: url(image-path("arrow-down.png")) no-repeat transparent right;
+							background-size: 20px;
+					    &:hover {
+					    	border-color: $green-color;
+					    	opacity: 0.9;
+					    }
+  					}
+					}
+    		}
+			}
+		}
+	}
+}
+
+.links-footer {
+	text-align: left;
+	font-family: $principal-font;
+	padding-left: 30px;
+	padding-top: 47px;
+	@media (max-width: 767px) {
+		padding-left: 20px;
+		padding-top: 10px;
+	}
+	li {
+		color: $black-color;
+		padding: 0px 10px;
+		border-right: 1px solid rgba(38,41,44,.6);
+		font-size: 14px;
+		a {
+			color: rgba(38,41,44,.6);
+			font-weight: 400;
+			&:hover {
+				color: $black-color;
+				cursor: pointer;
+			}
+		}
+	}
+	li:last-child {
+		border-right: 0;
+	}
+}
+
+.content-social-footer {
+	text-align: right;
+	font-family: $principal-font;
+	@media (max-width: 991px) {
+		text-align: center;
+	}
+	ul { 
+		margin-bottom: 7px;
+		li {
+			padding: 0px 15px;
+			a {
+				i {
+					color: #747678;
+					font-size: 22px;
+				}
+				&:hover {
+					cursor: pointer;
+				}
+			}
+		}
+	}
+	p {
+		color: $black-color;
+		font-weight: 400;
+		font-size: 14px;
+	}
+}
+

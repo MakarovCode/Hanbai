@@ -1,0 +1,11 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= image_tag @info.call_to_action_blog_image.mid.url, style: "width: 100%;" %>
+    <%= image_tag @info.logo_inverse.url, style: "width: 100%;" %>
+    <h4><%= raw @info.call_to_action_blog_title%></h4>
+    <br>
+    <h5><%= raw @info.call_to_action_blog_text %></h5>
+    <br>
+  </div>
+</div>
+<%= link_to "¡Unete!", new_user_registration_path, class: "btn btn-primary btn-block btn-lg" %>

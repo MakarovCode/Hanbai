@@ -1,0 +1,123 @@
+<aside id="nav-container">
+	<div id="nav-wrapper">
+		<ul id="nav"
+			data-ng-controller="NavCtrl" data-collapse-nav data-slim-scroll data-highlight-active>
+			<li>
+				<%= link_to main_app.app_funnels_path, :"data-turbolinks" => false, onclick: "window.location.href = '#{app_funnels_path}'" do %>
+					<i class="fa fa-money">
+						<span class="icon-bg bg-danger"></span>
+					</i>
+					<span><%= t("sidebar.deals") %></span>
+				<% end %>
+				<ul>
+					<li>
+						<%= link_to main_app.app_funnels_path, :"data-turbolinks" => false do %>
+							<i class="fa fa-money">
+								<span class="icon-bg bg-danger"></span>
+							</i>
+							<span><%= t("sidebar.deals") %></span>
+						<% end %>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<%= link_to main_app.app_activities_path, :"data-turbolinks" => false, onclick: "window.location.href = '#{app_activities_path}'" do %>
+					<i class="fa fa-calendar-check-o">
+						<span class="icon-bg bg-success"></span>
+					</i>
+					<span><%= t("sidebar.deals") %></span>
+				<% end %>
+				<ul>
+					<li>
+						<%= link_to main_app.app_activities_path, :"data-turbolinks" => false do %>
+							<i class="fa fa-calendar-check-o">
+								<span class="icon-bg bg-success"></span>
+							</i>
+							<span><%= t("sidebar.activities") %></span>
+						<% end %>
+					</li>
+				</ul>
+
+			</li>
+			<li>
+				<%= link_to main_app.app_stats_path, :"data-turbolinks" => false, onclick: "window.location.href = '#{app_stats_path}'" do %>
+					<i class="fa fa-line-chart">
+						<span class="icon-bg bg-info"></span>
+					</i>
+					<span><%= t("sidebar.stats") %></span>
+				<% end %>
+				<ul>
+					<li>
+						<%= link_to main_app.app_stats_path, :"data-turbolinks" => false do %>
+							<i class="fa fa-line-chart">
+								<span class="icon-bg bg-info"></span>
+							</i>
+							<span><%= t("sidebar.stats") %></span>
+						<% end %>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">
+					<i class="fa fa-address-book-o ">
+						<span class="icon-bg bg-warning"></span>
+					</i>
+					<span><%= t("sidebar.contacts") %></span>
+				</a>
+				<ul>
+					<li>
+						<%= link_to main_app.app_organizations_path, :"data-turbolinks" => false do %>
+							<i class="fa fa-building-o"></i>
+							<span><%= t("sidebar.organizations")%></span>
+						<% end %>
+					</li>
+					<li>
+						<%= link_to main_app.app_people_path, :"data-turbolinks" => false do %>
+							<i class="fa fa-users"></i>
+							<span><%= t("sidebar.people")%></span>
+						<% end %>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">
+					<i class="fa fa-cogs">
+						<span class="icon-bg bg-primary"></span>
+					</i>
+					<span><%= t("sidebar.setups") %></span>
+				</a>
+				<ul>
+					<li>
+						<%= link_to main_app.edit_app_user_path(current_user) do %>
+							<i class="fa fa-user-circle"></i>
+							<span><%= t("sidebar.profile")%></span>
+						<% end %>
+					</li>
+					<li>
+						<%= link_to main_app.app_user_account_index_path(current_user) do %>
+							<i class="fa fa-credit-card"></i>
+							<span><%= t("sidebar.account")%></span>
+						<% end %>
+					</li>
+					<!-- <li>
+						<%#= link_to app_people_path do %>
+							<i class="fa fa-address-card-o"></i>
+							<span><%#= t("sidebar.account")%></span>
+						<%# end %>
+					</li>
+					<li>
+						<%#= link_to app_people_path do %>
+							<i class="fa fa-credit-card"></i>
+							<span><%#= t("sidebar.payments")%></span>
+						<%# end %>
+					</li> -->
+				</ul>
+			</li>
+<!--
+			bg-violet
+			bg-primary-light
+			bg-orange
+-->
+		</ul>
+	</div>
+</aside>

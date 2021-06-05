@@ -1,0 +1,39 @@
+<div class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="<%= main_app.root_path %>">
+				<%=image_tag 'logo_inverse.png', class: "img-responsive", style: "height: 50px;" %>
+			</a>
+		</div>
+		<div class="navbar-collapse collapse navbar-right scroll-me">
+			<ul class="nav navbar-nav ">
+				<li><%= link_to t("menu.home"), main_app.root_path %></li>
+				<li><%= link_to t("menu.blog"), main_app.blog_posts_path %></li>
+				<% unless user_signed_in? %>
+				<li><%= link_to t("menu.sign_in"), main_app.new_user_session_path %></li>
+				<li><%= link_to t("menu.sign_up"), main_app.new_user_registration_path %></li>
+				<% else %>
+				<li><%= link_to t("menu.sign_in"), main_app.app_funnels_path %></li>
+				<% end %>
+				<li><%= link_to t("menu.contact_us"), "#{main_app.root_path}#contact_us" %></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+ //Cambia el estilo del menú fijo a negro
+  $(window).bind('scroll', function () {
+  if ($(window).scrollTop() > 50) {
+      $('.navbar-fixed-top').addClass('shadow-menu');
+  } else {
+      $('.navbar-fixed-top').removeClass('shadow-menu');
+  }
+  });
+</script>

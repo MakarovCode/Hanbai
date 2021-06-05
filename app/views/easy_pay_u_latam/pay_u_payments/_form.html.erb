@@ -1,0 +1,47 @@
+<% user = User.find params[:user_id]%>
+<div class="row" style="margin-bottom: 20px;">
+  <div class="col-md-12">
+    <label>Nombre del pagador: </label>
+    <input name='buyerFullName' type='text' placeholder="Nombre" class="form-control" required value="<%= user.name%>">
+  </div>
+</div>
+<div class="row" style="margin-bottom: 20px;">
+  <div class="col-md-12">
+    <label>Email del comprador</label>
+    <input name='buyerEmail' type='email' placeholder='Correo electrónico' class="form-control"  required value="<%= user.email%>"/>
+  </div>
+</div>
+<div class="row hide" style="margin-bottom: 20px;">
+  <div class="col-md-12">
+    <label>Teléfono del pagador: </label>
+    <input name='telephone' type='phone' class="form-control" placeholder="Teléfono"  value="">
+  </div>
+</div>
+<div class="row hide" style="margin-bottom: 20px;">
+  <div class="col-md-12">
+    <label>Dirección: </label>
+    <input name='shippingAddress' type='text' class="form-control" placeholder="Dirección"  value="">
+  </div>
+</div>
+<div class="row hide" style="margin-bottom: 20px;">
+  <div class="col-md-12">
+    <label>Ciudad: </label>
+    <input name='shippingCity' type='hidden' class="form-control" placeholder="Ciudad"  value="Manizales">
+  </div>
+</div>
+<!-- Campos Ocultos -->
+<!-- Mínima información requerida por PayULatam -->
+<!-- http://developers.payulatam.com/es/web_checkout/integration.html -->
+<input name='merchantId'       type='hidden'  value='<%= @payUConfig.get_merchant_id %>'>
+<input name='accountId'        type='hidden'  value='<%= @payUConfig.get_account_id %>'>
+<input name='description'      type='hidden'  value='<%= @payu_payment.description %>'>
+<input name='referenceCode'    type='hidden'  value='<%= @payUConfig.placeholder %>-<%=@payu_payment.id%>'>
+<input name='amount'           type='hidden'  value='<%= @payu_payment.amount %>'>
+<input name='tax'              type='hidden'  value='0'>
+<input name='taxReturnBase'    type='hidden'  value='0'>
+<input name='currency'         type='hidden'  value='<%= @payu_payment.currency %>'>
+<input name='signature'        type='hidden'  value='<%= @signature %>'>
+<input name='shippingCountry'  type='hidden'  value='CO'>
+
+<input name='responseUrl'      type='hidden'  value='<%= @payUConfig.get_root_url %>/easy_pay_u_latam/pay_u_payments/<%= @payu_payment.id %>?user_id=<%= params[:user_id]%>'>
+<input name='confirmationUrl'  type='hidden'  value='<%= @payUConfig.get_root_url %>/easy_pay_u_latam/api/v1/pay_u_payments/<%= @payu_payment.id %>/confirmation.json?user_id=<%= params[:user_id]%>'>

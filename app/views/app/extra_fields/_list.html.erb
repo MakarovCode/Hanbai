@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-12" ng-controller="ExtraFieldsController as eCtrl" ng-init="eCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token %>', '<%= current_user.name %>, null')">
+    <div class="row" ng-repeat="extra_field in eCtrl.extra_fields" style="margin-bottom: 20px;">
+      <div class="col-md-12">
+        <%= render "app/extra_fields/field" %>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+      <div class="col-md-12">
+        <button type="button" class="btn btn-primary" ng-click="eCtrl.newField($event)">
+          <i class="fa fa-plus"></i> Agregar campo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,503 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("new-calendar-module", ['ui.calendar', 'ui.tinymce']);
+
+	module.controller('NewCalendarController', ['$http', '$scope', 'uiCalendarConfig', function ($http, $scope, uiCalendarConfig) {
+		var self = this;
+
+		this.new_event_id = 0;
+		this.url = "/app/api/v1/activities.json";
+		this.filters = null;
+		this.search_term = null;
+		this.new_event = null;
+		this.first_activity_type = null;
+		$scope.success_message = null;
+		$scope.error_message = null;
+		$scope.error_message_details = null;
+		$scope.loading = false;
+
+		setTimeout(function(){
+			$(".custom-calendar-icon").removeClass("fc-icon fc-icon-fa");
+			$('[data-toggle="tooltip"]').tooltip({
+				container: 'body'
+			});
+			$(".autcomplete-angular").change(function(){
+				var ele = $(this);
+				var ele_id = ele.siblings(".autocomplete_id_field");
+				var object = ele.data("object");
+
+				$scope.$apply(function(){
+					if (object == "deal"){
+						self.new_event[object+"_title"] = ele.val();
+					}
+					else{
+						self.new_event[object+"_name"] = ele.val();
+					}
+
+					self.new_event[object+"_id"] = ele_id.val();
+
+				});
+			});
+		},500);
+
+		$(".modal-new-activity").on("shown.bs.modal", function(e){
+			var data_event = $(".modal-new-activity").data("event");
+			var data_date = $(".modal-new-activity").data("date");
+			var deal_id = $(".modal-new-activity").data("deal_id");
+			var deal = $(".modal-new-activity").data("deal");
+			var person_id = $(".modal-new-activity").data("person_id");
+			$scope.$apply(function(){
+				if (data_event == null){
+					if (data_date != null){
+						self.initEvent(data_date);
+					}
+					else{
+						if (deal_id != null){
+							if (deal.person != null){
+								self.initEvent(null, deal_id, deal.person.id, deal);
+							}
+							else{
+								self.initEvent(null, deal_id, null, deal);
+							}
+						}
+						else if (person_id != null){
+							self.initEvent(null, null, person_id);
+						}
+						else{
+							self.initEvent();
+						}
+					}
+				}
+				else{
+					self.editEvent(data_event);
+				}
+			});
+		});
+
+		$(".modal-new-activity").on('hidden.bs.modal', function (e) {
+			$(".modal-new-activity").data("event", null);
+			$(".modal-new-activity").data("date", null);
+			$scope.error_message = null;
+			$scope.error_message_details = null;
+			$scope.success_message = null;
+			$(".ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content").remove();
+		});
+
+		this.getUrl = function(){
+			var event = {
+				url: "/app/api/v1/activities.json",
+				type: "GET",
+				data: {}
+			}
+
+			return event;
+		}
+
+		this.initEvent = function(date, deal_id, person_id, deal){
+			var start = moment()
+			var end = moment()
+			if (date == null){
+				date = moment()
+			}
+			else{
+				start = moment(date)
+				end = moment(date)
+			}
+			// var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+			// var day = currentDate.getDate();
+			// var month = currentDate.getMonth() + 1;
+			// var year = currentDate.getFullYear();
+			//
+			// var
+			//
+			// this.new_event = {id: this.new_event_id, title: "Llamada", start: year + "-" + month + "-" + day + " 8:00:00 AM", end: year + "-" + month + "-" + day + " 8:15:00", color: "#A569BD", duration: 15, date: year + "-" + month + "-" + day,
+			// time: "8:00:00 AM", notes: "", user_id: null, user_name: null, person_id: person_id, person_name: null, deal_id: deal_id, deal_name: null, activity_type_id: this.first_activity_type, notes: [{text: ""}]};
+			// angular.element('#newActivityCalendar').fullCalendar( 'gotoDate', $.fullCalendar.moment(moment().utc().valueOf()));
+
+			var month = date.format('M');
+			var day   = date.format('D');
+			var year  = date.format('YYYY');
+
+			start.endOf("hour").add(16, "minutes")
+
+			end.endOf("hour").add(31, "minutes")
+
+			var person_name = null;
+			var person = null;
+			var deal_title = null;
+			var title = "Llamada";
+
+			if (deal != null){
+				deal_title = deal.title;
+				person = deal.person;
+				if (person != null){
+					person_name = person.name;
+					title = person_name + " Llamada";
+					if (person.company != null && person.company != ""){
+						title = person.company.name + " - " + person_name + " Llamada";
+					}
+				}
+			}
+
+			this.new_event = {id: this.new_event_id, title: title, start: start.format("YYYY-MM-D HH:mm"), end: end.format("YYYY-MM-D HH:mm"), color: "#A569BD", duration: "15", date: start.format("YYYY-MM-D"),
+			time: start.format("HH:mm"), notes: "", user_id: null, user_name: null, person_id: person_id, person_name: person_name, deal_id: deal_id, deal_title: deal_title, activity_type_id: this.first_activity_type, notes: [{text: ""}], person: person, deal: deal};
+			angular.element('#newActivityCalendar').fullCalendar( 'gotoDate', $.fullCalendar.moment(date));
+
+			angular.element('#newActivityCalendar').fullCalendar( 'removeEvents', this.new_event_id);
+			angular.element('#newActivityCalendar').fullCalendar( 'renderEvent', this.new_event, true );
+			angular.element('#newActivityCalendar').fullCalendar( 'render' );
+			this.prepareAutocomplete();
+		}
+
+		this.editEvent = function(event){
+			if (event != null){
+
+				// var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+				var currentDate = moment()
+				var month = currentDate.format('M');
+				var day   = currentDate.format('D');
+				var year  = currentDate.format('YYYY');
+
+				var deal_title = null;
+
+				if (event.deal != null){
+					deal_title = event.deal.title;
+				}
+
+				try {
+					event.start.format("YYYY-MM-D HH:mm");
+				}
+				catch(err) {
+					event.start = moment(event.start);
+					event.end = moment(event.end);
+				}
+
+				this.new_event = {id: event.id, title: event.title, start: event.start.format("YYYY-MM-D HH:mm"), end: event.end.format("YYYY-MM-D HH:mm"), color: event.color, duration: event.duration+"", date: event.date,
+				time: event.time_iso, notes: event.notes, user_id: event.user_id, user_name: event.user_name, person_id: event.person_id, person_name: event.person_name, deal_id: event.deal_id, deal_title: deal_title, activity_type_id: event.activity_type_id, person: event.person, deal: event.deal};
+
+				angular.element('#newActivityCalendar').fullCalendar( 'gotoDate', $.fullCalendar.moment(event.date));
+
+				angular.element('#newActivityCalendar').fullCalendar( 'removeEvents', this.new_event_id);
+				//angular.element('#newActivityCalendar').fullCalendar( 'renderEvent', this.new_event, true );
+				angular.element('#newActivityCalendar').fullCalendar( 'render' );
+			}
+			else{
+				this.initEvent();
+			}
+			this.prepareAutocomplete();
+		}
+
+		this.prepareAutocomplete = function(){
+			// var autocomplete = $("form#new_activity").find(".autocomplete_field");
+			// autocomplete.each(function(){
+			// 	var autocomplete_id = $(this).siblings(".autocomplete_id_field");
+			// 	var button = $(this).parent().find("#reset_autocomplete");
+			// 	var alert = $(this).parent().siblings("#autocomplete-info");
+			// 	if (autocomplete_id.val() != "" && autocomplete_id.val() != null){
+			// 		debugger;
+			// 		$(this).prop("readonly", true);
+			// 		button.show(100);
+			// 	}
+			// 	else{
+			// 		$(this).prop("readonly", false);
+			// 		button.hide(100);
+			// 	}
+			// });
+		}
+
+		this.timeChange = function(){
+			angular.element('#newActivityCalendar').fullCalendar( 'removeEvents', this.new_event_id);
+
+			// aux_date.setHours(aux_date.getHours() + 5);
+			// aux_date.setMinutes(aux_date.getMinutes() + parseInt(this.new_event.duration));
+			// var day = aux_date.getDate();
+			// var month = aux_date.getMonth() + 1;
+			// var year = aux_date.getFullYear();
+			// var hour = aux_date.getHours();
+			// var minutes = aux_date.getMinutes();
+			//var end_date_str = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":00"
+			var start_date_str = this.new_event.date + " " + this.new_event.time;
+			var start_date = moment(start_date_str);
+			var aux_date = moment(start_date_str);
+
+
+			this.new_event.start = start_date.format("YYYY-MM-D HH:mm");
+			this.new_event.end = aux_date.add(parseInt(this.new_event.duration), "minutes").format("YYYY-MM-D HH:mm");
+
+			angular.element('#newActivityCalendar').fullCalendar( 'renderEvent', this.new_event, true );
+			angular.element('#newActivityCalendar').fullCalendar( 'gotoDate', $.fullCalendar.moment(this.new_event.date));
+		}
+
+		this.activities = [];
+
+		/* config object */
+		$scope.uiConfig = {
+			calendar: {
+				events: self.getUrl(),
+				locale: 'es',
+				timezone: 'local',
+				defaultView: "agendaDay",
+				height: 600,//$(".modal-new-activity").height() - 160,
+				editable: true,
+				slotDuration: "00:15:00",
+				snapDuration: "00:15:00",
+				timeFormat: 'hh:mm a',
+				header:{
+					left: 'title',
+					center: '',
+					right: 'today prev,next'
+				},
+				loading: function(isLoading){
+
+				},
+				eventClick: function(event, jsEvent, view){
+					console.log("event clicked");
+				},
+				eventDrop: function(event, delta, revertFunc, jsEvent, ui, view){
+
+					//MODIFICAR START DATE
+					// var start_date_str = self.new_event.date + " " + self.new_event.time;
+					// var start_date = new Date(self.new_event.date + " " + self.new_event.time);
+					//
+					// start_date.setFullYear(start_date.getFullYear() + delta._data.years);
+					// start_date.setMonth(start_date.getMonth() + delta._data.months);
+					// start_date.setDate(start_date.getDate() + delta._data.days);
+					// start_date.setHours(start_date.getHours() + 5 + delta._data.hours);
+					// start_date.setMinutes(start_date.getMinutes() + delta._data.minutes);
+					//
+					// var day = start_date.getDate();
+					// var month = start_date.getMonth() + 1;
+					// var year = start_date.getFullYear();
+					// var hour = start_date.getHours();
+					// var minutes = start_date.getMinutes();
+
+					var start_date_str = self.new_event.date + " " + self.new_event.time;
+					var start_date = moment(start_date_str);
+					start_date.add(delta._data.years, "years");
+					start_date.add(delta._data.months, "months");
+					start_date.add(delta._data.days, "days");
+					start_date.add(delta._data.hours, "hours");
+					start_date.add(delta._data.minutes, "minutes");
+
+					self.new_event.date = start_date.format("YYYY-MM-D");
+
+					self.new_event.time = start_date.format("HH:mm");
+
+					// self.new_event.date = year + "-" + month + "-" + day;
+					// self.new_event.time = hour + ":" + minutes + ":00 UTC";
+
+				},
+				eventResize: function(event, delta, revertFunc, jsEvent, ui, view){
+					//MODIFICAR END DATE
+					self.new_event.duration = parseInt(self.new_event.duration) + (delta._data.days * 24 * 60) + (delta._data.hours * 60) + delta._data.minutes;
+					self.new_event.duration += "";
+				},
+				dayClick: function(date, jsEvent, view){
+					console.log("day clicked");
+				},
+			}
+		};
+
+		$scope.tinymceOptions = {
+			menubar: false,
+			toolbar: 'bold, italic, underline, strikethrough, alignleft, aligncenter, alignright, alignjustify, bullist, numlist, blockquote'
+		};
+
+		$('.datepicker').datepicker({
+			format: 'yyyy-mm-dd',
+			orientation: 'bottom'
+		});
+
+		/* Autor: Simon Correa
+		*
+		* Fecha creacion: 2016-11-21
+		*
+		* Autor actualizacion:
+		*
+		* Fecha actualizacion:
+		*
+		*
+		*/
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+		}
+
+		// this.selectInit = function(value, key){
+		// 	this.new_event[key] = value;
+		// }
+
+		this.selectActivity = function(id, text){
+			this.new_event.activity_type_id = id;
+			var deal = this.new_event.deal;
+			var title = text;
+			if (deal != null){
+				deal_title = deal.title;
+				person = deal.person;
+				if (person != null){
+					person_name = person.name;
+					title = person_name + " " + text;
+					if (person.company != null){
+						title = person.company.name + " - " + person_name + " " + text;
+					}
+				}
+			}
+			this.new_event.title = title;
+		}
+
+		$scope.save = function(){
+			$scope.loading = true;
+
+			if (self.new_event.id == 0){
+				self.create();
+			}
+			else{
+				self.update();
+			}
+		}
+
+		$scope.destroy = function(){
+			self.destroy();
+		}
+
+		this.create = function(){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				activity: {
+					activity_type_id: this.new_event.activity_type_id,
+					title: this.new_event.title,
+					date_and_time: this.new_event.date + " " + this.new_event.time + " " + new Date().toString().match(/([-\+][0-9]+)\s/)[1],
+					duration: this.new_event.duration,
+					notes_attributes: [{
+						text: ""
+					}],
+					user_id: $("#activity_user_id").val(),
+					deal_id: $("#activity_deal_id").val(),
+					person_id: $("#activity_person_id").val()
+				}
+			};
+
+			if (this.new_event.notes != ""){
+				params.activity.notes_attributes[0].text = this.new_event.notes[0].text
+			}
+
+			// if (this.new_event.person_name != "" && this.new_event.person_name != null && params.activity.person_id != null && params.activity.person_id != ""){
+			// }
+			params["person_name"] = this.new_event.person_name
+
+			$http.post("/app/api/v1/activities.json", params).then(
+				function(res, status){
+					$scope.success_message = res.data.message;
+					self.afterSave();
+				},
+				function(res, status){
+					if (res.data.need_gold == true){
+						$scope.need_gold_message = res.data.errors;
+						$("#expire-modal").modal("show");
+					}
+					$scope.error_message = res.data.message;
+					$scope.error_message_details = res.data.errors;
+
+					self.afterError();
+				});
+			}
+
+			this.update = function(){
+				var params = {
+					user_uuid: self.user_uuid,
+					user_token: self.user_token,
+					activity: {
+						activity_type_id: this.new_event.activity_type_id,
+						title: this.new_event.title,
+						date_and_time: this.new_event.date + " " + this.new_event.time + " " + new Date().toString().match(/([-\+][0-9]+)\s/)[1],
+						duration: this.new_event.duration,
+						notes_attributes: [{
+							text: ""
+						}],
+						// user_id: this.new_event.user_id,
+						// deal_id: this.new_event.deal_id,
+						// person_id: this.new_event.person_id
+						user_id: $("#activity_user_id").val(),
+						deal_id: $("#activity_deal_id").val(),
+						person_id: $("#activity_person_id").val()
+					}
+				};
+
+				if (this.new_event.notes != ""){
+					params.activity.notes_attributes[0].text = this.new_event.notes[0].text
+				}
+
+				$http.put("/app/api/v1/activities/"+this.new_event.id+".json", params).then(
+					function(res, status){
+						$scope.success_message = res.data.message;
+						self.afterSave();
+					},
+					function(res, status){
+						$scope.error_message = res.data.message;
+						$scope.error_message_details = res.data.errors;
+
+						self.afterError();
+					});
+				}
+
+				this.afterSave = function(){
+					$(".modal-new-activity").modal("hide");
+					$scope.loading = false;
+					$("#new_activity")[0].reset();
+				}
+
+				this.afterError = function(){
+					$scope.loading = false;
+				}
+
+				this.destroy = function(){
+					var params = {
+						user_uuid: "",
+						user_token: ""
+					};
+
+					$http.delete("/app/api/v1/activities/"+this.new_event.id+".json", {params: params}).then(
+						function(res, status){
+							$scope.success_message = res.data.message;
+							self.afterSave();
+						},
+						function(res, status){
+							$scope.error_message = res.data.message;
+							$scope.error_message_details = res.data.errors;
+
+							self.afterError();
+						});
+					}
+
+					this.changeActivityStatus = function(event, _status){
+						event.stopPropagation();
+
+						var params = {
+							user_uuid: self.user_uuid,
+							user_token: self.user_token,
+							status: _status
+						};
+
+						self.new_event.status = _status;
+
+						if (_status == 2){
+							$(".modal-new-activity").modal("hide");
+							setTimeout(function(){
+								$(".modal-new-activity").modal("show");
+							}, 500);
+						}
+
+						$http.post("/app/api/v1/activities/"+self.new_event.id+"/change_status.json", params).then(
+							function(res, status){
+
+							},
+							function(res, status){
+								//alert("Ha ocurrido un error inesperado");
+							}
+						);
+					}
+
+				}]);
+			})();

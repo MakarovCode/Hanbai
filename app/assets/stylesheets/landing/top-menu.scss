@@ -1,0 +1,38 @@
+.navbar.navbar-default {
+	background: #fff;
+	.navbar-header {
+		padding: 10px 0;
+		.navbar-toggle {
+			border-color: $black-color;
+			.icon-bar {
+		    background-color: $black-color;
+			}
+		}
+	}
+	.navbar-collapse {
+		@media (min-width: 768px) {
+			padding: 15px 0;
+		}
+		.nav.navbar-nav {
+			li a {
+				color: $black-color;
+				font-weight: 600;
+				font-family: $principal-font;
+				font-size: 17px;
+			}
+			li:last-child {
+				@media (min-width: 768px) {
+					box-shadow: inset 0 0 0 3px $black-color;
+					&:hover {
+						background: rgba(61,69,74,.1);
+					}
+				}
+			}
+		}
+	}
+}
+
+.shadow-menu {
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.19);
+}
+

@@ -1,0 +1,146 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("extra-fields-module", ['dragularModule', 'ngSanitize']);
+
+	module.controller('ExtraFieldsController', ['$timeout', '$interval', '$http', '$scope', 'dragularService', function ($timeout, $interval, $http, $scope, dragularService) {
+		var self = this;
+		this.extra_fields = [];
+		this.funnel_id = null;
+		this.tmp_field_cont = 0;
+
+		this.initialize = function (user_uuid, user_token, user_name, funnel_id) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+			this.user_name = user_name;
+			this.funnel_id = funnel_id;
+			this.getFields();
+		}
+
+		this.getFields = function(){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				funnel_id: self.funnel_id
+			}
+
+			$http.get("/app/api/v1/extra_fields.json", {params: params}).then(
+				function(res, status){
+					self.extra_fields = res.data;
+					$scope.$emit('setExtraFields', {extra_fields: self.extra_fields});
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		this.generateTmpId = function(){
+			this.tmp_field_cont ++;
+			return this.user_uuid + "-" + this.tmp_field_cont;
+		}
+
+		this.newField = function(event){
+			event.stopPropagation();
+
+			var aux_extra_field = {
+				tmp_id: this.generateTmpId(),
+				id: null,
+				name: "",
+				kind: "1",
+				requierd: "0",
+				funnel_id: this.funnel_id,
+				object_type: this.funnel_id == null ? 1 : 2
+			}
+			this.extra_fields.push(aux_extra_field);
+		}
+
+		this.createOrUpdateField = function(event, extra_field){
+			event.stopPropagation();
+			if (extra_field.id == null){
+				this.createField(event, extra_field)
+			}
+			else{
+				this.updateField(event, extra_field)
+			}
+		}
+
+		this.createField = function(event, extra_field){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				extra_field: extra_field
+			}
+
+			$http.post("/app/api/v1/extra_fields.json", params).then(
+				function(res, status){
+					extra_field.id = res.data.extra_field_id;
+					$scope.$emit('setExtraFields', {extra_fields: self.extra_fields});
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		this.updateField = function(event, extra_field){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				extra_field: extra_field
+			}
+
+			$http.put("/app/api/v1/extra_fields/"+extra_field.id+".json", params).then(
+				function(res, status){
+					$scope.$emit('setExtraFields', {extra_fields: self.extra_fields});
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		this.destroyField = function(event, extra_field){
+			event.stopPropagation();
+
+			if (extra_field.id == null){
+				for (var i = 0; i < this.extra_fields.length; i++) {
+					if (this.extra_fields[i].tmp_id == extra_field.tmp_id){
+						this.extra_fields.splice(i, 1);
+						$scope.$emit('setExtraFields', {extra_fields: self.extra_fields});
+						return;
+					}
+				}
+			}
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token
+			}
+
+			$http.delete("/app/api/v1/extra_fields/"+extra_field.id+".json", {params: params}).then(
+				function(res, status){
+
+					for (var i = 0; i < self.extra_fields.length; i++) {
+						if (self.extra_fields[i].id == extra_field.id){
+							self.extra_fields.splice(i, 1);
+							$scope.$emit('setExtraFields', {extra_fields: self.extra_fields});
+							break;
+						}
+					}
+
+				},
+				function(res, status){
+				}
+			);
+		}
+
+		$scope.$on('initExtraFields', function (event, args) {
+			self.funnel_id = args.funnel_id;
+			self.getFields();
+		});
+
+	}]);
+})();

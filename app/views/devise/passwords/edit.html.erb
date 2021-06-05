@@ -1,0 +1,43 @@
+<div class="container" style="margin-top: 80px; margin-bottom: 40px;">
+	<div class="row">
+		<div class="col-md-7">
+
+		</div>
+		<div class="col-md-5">
+			<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+			<%= f.hidden_field :reset_password_token %>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1 style="text-align:center;"><%= t("change_pass.title")%></h1>
+				</div>
+				<div class="panel-body">
+
+					<%= devise_error_messages! %>
+
+					<div class="row field">
+						<div class="col-md-12">
+							<%= f.label :password %><br />
+							<%= f.password_field :password, autofocus: true, class: "form-control input-lg", placeholder: "Escribe tu nueva clave" %>
+						</div>
+					</div>
+
+					<div class="row field">
+						<div class="col-md-12">
+							<%= f.label :password_confirmation %><br />
+							<%= f.password_field :password_confirmation, autofocus: true, class: "form-control input-lg", placeholder: "Confirma tu nueva clave" %>
+						</div>
+					</div>
+
+					<div class="row field">
+						<div class="col-md-12">
+							<%= f.submit t("change_pass.main_action"), class: "btn btn-primary btn-block btn-lg" %>
+						</div>
+					</div>
+					<% end %>
+
+					<%= render "devise/shared/links" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  period: MyString
+  pay_time: 2017-02-01 10:49:56
+  subtotal: 1.5
+  iva: 1.5
+  total: 1.5
+  discount: 1.5
+  coupon: one
+  status: 1
+
+two:
+  user: two
+  period: MyString
+  pay_time: 2017-02-01 10:49:56
+  subtotal: 1.5
+  iva: 1.5
+  total: 1.5
+  discount: 1.5
+  coupon: two
+  status: 1

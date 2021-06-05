@@ -1,0 +1,205 @@
+<div id="home" class="bg-image" style="background-image: url('<%= @info.main_image.high%>');">
+  <div class="overlay">
+    <!-- overylay class usage -->
+    <div class="container">
+      <div class="col-md-6 text-center">
+        <%= form_for(User.new, as: "user", url: registration_path("user")) do |f| %>
+        <div class="panel panel-default" style="background-color: rgba(0,0,0,0.6); border: none; border-radius: 10px;">
+          <div class="panel-heading" style="background-color: rgba(0,0,0,0.6);">
+            <h1 style="text-align:center; font-size: 40px; color: white; padding-top: 0px;"><%= t("sign_up.title")%></h1>
+          </div>
+          <div class="panel-body" style="text-align:left;">
+
+            <%#= devise_error_messages! %>
+
+            <div class="row field">
+              <div class="col-md-12">
+                <%= f.label :name %><br />
+                <%= f.text_field :name, autofocus: true, class: "form-control input-lg", placeholder: "Escribe tu nombre", style: "background-color: rgba(0,0,0,0.8); color: white;" %>
+              </div>
+            </div>
+
+            <div class="row field">
+              <div class="col-md-12">
+                <%= f.label :email %><br />
+                <%= f.email_field :email, autofocus: false, class: "form-control input-lg", placeholder: "Escribe tu correo electrónico", style: "background-color: rgba(0,0,0,0.8); color: white;" %>
+              </div>
+            </div>
+
+            <div class="row field">
+              <div class="col-md-12">
+                <%= f.label :password %><br />
+                <%= f.password_field :password, autocomplete: "off", class: "form-control input-lg", placeholder: "Escribe tu clave", style: "background-color: rgba(0,0,0,0.8); color: white;" %>
+              </div>
+            </div>
+
+            <div class="row field">
+              <div class="col-md-12">
+                <%= f.label :password_confirmation %><br />
+                <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control input-lg", placeholder: "Confirma tu clave", style: "background-color: rgba(0,0,0,0.8); color: white;" %>
+              </div>
+            </div>
+
+            <div class="row field">
+              <div class="col-md-12">
+                <%= f.submit t("sign_up.main_action"), class: "btn btn-primary btn-block btn-lg" %>
+              </div>
+            </div>
+            <%#= render "devise/shared/links" %>
+          </div>
+        </div>
+        <% end %>
+      </div>
+      <div class="col-md-6 text-center">
+        <h1>
+          <%= raw @info.main_title %>
+        </h1>
+        <h2>
+          <%= raw @info.main_text %>
+        </h2>
+        <br>
+        <img src="<%= asset_path(@info.logo)%>" alt="" class="" style="width: 300px;"/>
+        <p class="p-cls">
+          <%= raw @info.main_sub_text %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<!--HOME SECTION END  -->
+<section id="services">
+  <div class="container">
+    <div class="row text-center pad-bottom">
+      <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+        <h2 class="head-set"><%= raw @info.services_title %></h2>
+        <p>
+          <%= raw @info.services_text %>
+        </p>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4 col-sm-4 col-xs-12">
+        <i class="<%= raw @info.service1_icon %>  fa-5x"></i>
+        <h4 class="head-set"><%= raw @info.service1_title %></h4>
+        <p style="font-size: 16px;">
+          <%= raw @info.service1_text %>
+        </p>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-12">
+        <i class="<%= raw @info.service2_icon %>  fa-5x"></i>
+        <h4 class="head-set"><%= raw @info.service2_title %></h4>
+        <p style="font-size: 16px;">
+          <%= raw @info.service2_text %>
+        </p>
+      </div>
+      <div class="col-md-4 col-sm-4 col-xs-12">
+        <i class="<%= raw @info.service3_icon %>  fa-5x"></i>
+        <h4 class="head-set"><%= raw @info.service3_title %></h4>
+        <p style="font-size: 16px;">
+          <%= raw @info.service3_text %>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--SERVICES SECTION END  -->
+<% if User.count > 1000 && Deal.count > 1000 && Activity.count > 1000%>
+<div class="parallax-like">
+  <div class="overlay">
+
+
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-lg-4 col-md-4 col-sm-4">
+          <div>
+            <strong><%= User.count%> +</strong>
+            <p>
+              <i class="fa fa-handshake-o" aria-hidden="true"></i>
+              Negocios
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+          <div>
+            <strong><%= Deal.count%> +</strong>
+            <p>
+              <i class="fa fa-user-o" aria-hidden="true"></i>
+              Usuarios
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+          <div>
+            <strong><%= Activity.count%> +</strong>
+            <p>
+              <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+              Eventos
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+<!--PARALLAX LIKE / STATS SECTION END  -->
+<section id="works">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+        <h2 class="head-set">ACERCA DE NOSOTROS</h2>
+        <p>
+          <%= raw @info.about_us %>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--WORKS / PORTFOLIO SECTION END  -->
+<div id="video-sec" class="player" data-property="{videoURL:'<%= @info.video %>',containment:'self',autoPlay:true, mute:true, startAt:0, opacity:1,mute: true,showControls:false}">
+  <!-- change https://www.youtube.com/watch?v=Ycv5fNd4AeM to your youtube url-->
+  <div class="overlay">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+
+          <h1>
+            <img src="<%= asset_path(@info.logo)%>" alt="" class="" style="width: 300px;"/>
+            <br>
+            <br>
+            <%= raw @info.video_title %>
+          </h1>
+          <h4>
+            <%= raw @info.video_text %>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- VIDEO SECTION END-->
+
+<%= render "landing/layouts/contact" %>
+
+<!-- CONTACT SECTION END-->
+<!-- <section id="clients">
+<div class="container">
+<div class="row">
+<div class="col-md-3">
+<img src="assets/img/audio.png" alt="" class="img-responsive" />
+</div>
+<div class="col-md-3">
+<img src="assets/img/codecanon.png" alt="" class="img-responsive" />
+</div>
+<div class="col-md-3">
+<img src="assets/img/graphic.png" alt="" class="img-responsive" />
+</div>
+<div class="col-md-3">
+<img src="assets/img/themeforest.png" alt="" class="img-responsive" />
+</div>
+</div>
+
+</div>
+</section> -->

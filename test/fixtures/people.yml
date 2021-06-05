@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  name: MyString
+  notes: MyText
+  open_deals_count: 1
+  won_deals_count: 1
+  closed_deal_count: 1
+  activities_count: 1
+  done_activities_count: 1
+  undone_activities_count: 1
+
+two:
+  company: two
+  name: MyString
+  notes: MyText
+  open_deals_count: 1
+  won_deals_count: 1
+  closed_deal_count: 1
+  activities_count: 1
+  done_activities_count: 1
+  undone_activities_count: 1

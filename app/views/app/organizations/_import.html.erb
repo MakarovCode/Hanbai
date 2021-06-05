@@ -1,0 +1,31 @@
+
+<div class="modal fade modal-import-company" tabindex="-1" role="dialog" aria-labelledby="modal-import-company-label">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<%= form_tag import_app_api_v1_organizations_path(:json), remote: true, method: :post, id: "import_company", multipart: true do %>
+			<%= render "app/layouts/auth" %>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-import-company-labe"><%= t("organizations.import.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<%= render "app/layouts/ajax_form_messages" %>
+
+				<div class="form-group row">
+					<div class="col-sm-12 alert alert-info">
+						<strong>Alerta: </strong>
+						<%= t("organizations.import.message") %>
+					</div>
+					<label for="file" class="col-sm-12"><%= t("organizations.import.label") %></label>
+					<div class="col-sm-12">
+						<input type="file" id="file" name="file" accept=".xls,.xlsx,.csv"/>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<%= render "app/layouts/ajax_form_actions", modal: true, formid: "import_company", transaltions: "organizations.import" %>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

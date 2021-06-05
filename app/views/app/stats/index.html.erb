@@ -1,0 +1,147 @@
+<div class="row">
+  <div class="col-md-4">
+    <%= form_tag app_stats_path, method: :get do %>
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        Filtros
+      </div>
+      <div class="panel-body">
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col-md-12">
+            <label for="">Periodo:</label>
+          </div>
+          <div class="col-xs-12">
+            <% periods = [{value: "month", label: "Este mes"}, {value: "last_month", label: "Mes pasado"}, {value: "week", label: "Esta semana"}, {value: "last_week", label: "Semana pasada"}, {value: "year", label: "Este año"}, {value: "last_year", label: "Año pasado"}] %>
+            <select name="period" class="form-control">
+              <% periods.each do |period| %>
+                <% if period[:value] == params[:period]%>
+                <option value="<%= period[:value]%>" selected><%= period[:label]%></option>
+                <% else %>
+                <option value="<%= period[:value]%>"><%= period[:label]%></option>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col-md-12">
+            <div class="alert alert-info">
+              El rango de fechas tiene prioridad sobre el periodo al filtrar.
+            </div>
+          </div>
+          <div class="col-md-5">
+            <label>O en un rango de fechas:</label>
+          </div>
+          <div class="col-md-7">
+            <input type="text" class="datepicker-stats form-control" placeholder="Fecha inicio" name="start_date" value="<%= params[:start_date]%>">
+            <input type="text" class="datepicker-stats form-control" placeholder="Fecha fin" style="margin-top: 10px;" name="end_date" value="<%= params[:end_date]%>">
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col-md-5">
+            <label>Embudo:</label>
+          </div>
+          <div class="col-md-7">
+            <select class="form-control" name="funnel_id">
+              <option value="">Todos</option>
+              <% @funnels.each do |funnel| %>
+                <% if funnel.id.to_s == params[:funnel_id] %>
+                <option value="<%= funnel.id%>" selected><%= funnel.name%></option>
+                <% else %>
+                <option value="<%= funnel.id%>"><%= funnel.name%></option>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 btn-group">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-filter"></i>
+              Filtrar
+            </button>
+            <%= link_to "Limpiar", app_stats_path, class: "btn btn-danger" %>
+          </div>
+        </div>
+      </div>
+    </section>
+    <% end %>
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        Ingresos mensuales
+      </div>
+      <div class="panel-body">
+        <p>
+          Esta gráfica no es afectada por los filtros de fechas.
+        </p>
+        <%= line_chart [{title: "Total", field: :total}, {title: "Comisión", field: :commission}].map { |a|
+          {name: a[:title], data: @deals.group_by_month(:won_time).maximum(a[:field])}
+          }, legend: "top" %>
+        </div>
+      </section>
+    </div>
+    <div class="col-md-4">
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Negocios nuevos
+        </div>
+        <div class="panel-body">
+          <%= render "app/stats/counters", object: @new_business, color: "primary" %>
+        </div>
+      </section>
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Negocios ganados
+        </div>
+        <div class="panel-body">
+          <%= render "app/stats/counters", object: @won_business, color: "success" %>
+        </div>
+      </section>
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Negocios perdidos
+        </div>
+        <div class="panel-body">
+          <%= render "app/stats/counters", object: @lost_business, color: "danger" %>
+        </div>
+      </section>
+
+    </div>
+    <div class="col-md-4">
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Actividades añadidas
+        </div>
+        <div class="panel-body">
+          <%= render "app/stats/activities", array: @new_activities, type: "", max: @new_max %>
+        </div>
+      </section>
+
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Actividades completadas
+        </div>
+        <div class="panel-body">
+          <%= render "app/stats/activities", array: @done_activities, type: "progress-bar-success", max: @done_max %>
+        </div>
+      </section>
+
+      <section class="panel panel-default">
+        <div class="panel-heading">
+          Actividades diarias
+        </div>
+        <div class="panel-body">
+          <%= line_chart [{title: "Periodo seleccionado", field: :total}, {title: "Periodo anterior", field: :commission}].map { |a|
+            {name: a[:title], data: @activities.group_by_day(:done_time).count}
+            }, legend: "top" %>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+  $('.datepicker-stats').datepicker({
+    format: 'yyyy-mm-dd',
+    orientation: 'bottom'
+  });
+  </script>

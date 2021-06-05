@@ -1,0 +1,14 @@
+<div ng-hide="deal.id == null">
+  <div class="status_mark" ng-class="{'status_mark_pending': deal.activities_status == 0, 'status_mark_overdue': deal.activities_status == 1, 'status_mark_done': deal.activities_status == 2}"></div>
+  <header>
+    {{deal.title}} <br>
+    <small>{{deal.person.name}}</small>
+    <small ng-show="deal.person.company != null"> - {{deal.person.company.name}}</small>
+  </header>
+  <div class="detail">
+    {{deal.total | currency}} - <span class="text-success" style="font-weight: bold;">{{deal.commission | currency}}</span>
+  </div>
+  <div class="detail">
+    <i class="fa fa-calendar-check-o" aria-hidden="true" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Actividades completadas." data-content="Actividades completadas en este negocio."></i> {{deal.done_activities_count}}/{{deal.activities_count}}
+  </div>
+</div>

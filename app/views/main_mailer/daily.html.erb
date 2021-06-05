@@ -1,0 +1,41 @@
+<p>Hola <%= @user.name %>,</p>
+<p>
+  <%= @main_message%>
+</p>
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table class="table-fill" style="margin-bottom: 20px;">
+          <tbody>
+            <tr>
+              <th>Actividad</th>
+              <th>Tipo</th>
+              <th>Negocio</th>
+              <th>Contacto</th>
+              <th>Hora</th>
+              <!-- <th>Duración</th> -->
+            </tr>
+            <% @activities.each do |activity| %>
+            <tr>
+              <td><%= activity.title%></td>
+              <td><%= activity.activity_type.name unless activity.activity_type.nil?%></td>
+              <td><%= activity.deal.title unless activity.deal.nil? %></td>
+              <td><%= activity.person.name unless activity.person.nil? %></td>
+              <td><%= activity.date_and_time.strftime("%I:%M %p") %></td>
+              <!-- <td><%#= humanize_duration(activity.duration*60) %></td> -->
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td> <a href="<%= app_activities_url %>" target="_blank"><%= @call_to_action%></a> </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,52 @@
+<div class="member-cont" ng-repeat="member in uaCtrl.members" ng-controller="UsersInfoController as uiCtrl">
+  <img ng-src="{{member.image}}" ng-click="uiCtrl.toggleView($event);"/>
+  <div ng-show="uiCtrl.show == true" class="users-info-view" id="users-info-view-<%= object%>-{{member.id}}" ng-init="uiCtrl.initialize('<%= current_user.email %>', '<%= current_user.authentication_token %>', '<%= object%>', member)">
+    <div class="media" ng-hide="uiCtrl.show_permissions_list == true">
+      <div class="media-left">
+        <a href="#">
+          <img class="media-object" ng-src="{{member.image}}" alt="img" style="width: 35px; height: 35px;">
+        </a>
+      </div>
+      <div class="media-body">
+        <h5 class="media-heading">
+          {{member.name}}
+          <button type="button" class="btn btn-xs btn-default pull-right" ng-click="uiCtrl.toggleView($event);">
+            <i class="fa fa-times"></i>
+          </button>
+        </h5>
+        <small>({{member.status.message}})</small>
+      </div>
+    </div>
+    <div class="btn-group-vertical" style="width: 100%;" ng-hide="uiCtrl.show_permissions_list == true">
+      <button type="button" class="btn btn-block btn-default" ng-click="uiCtrl.show_permissions_list = true" ng-show="uiCtrl.object == 'funnels'">
+        Cambiar permisos... ({{member.permission.name}})
+      </button>
+      <button type="button" class="btn btn-block btn-danger" ng-click="uiCtrl.removeMember($event, member);">
+        <span ng-show="uiCtrl.object == 'funnels'">Sacar del embudo...</span>
+        <span ng-show="uiCtrl.object == 'deals'">Sacar del negocio...</span>
+      </button>
+    </div>
+    <div class="row" ng-show="uiCtrl.show_permissions_list == true">
+      <div class="col-xs-12 bottom-separator">
+        <h5>
+          <button type="button" class="btn btn-xs btn-default" ng-click="uiCtrl.show_permissions_list = false">
+            <i class="fa fa-arrow-left"></i>
+          </button>
+          Cambiar permisos
+        </h5>
+      </div>
+      <div class="col-xs-12">
+        <div class="list-group">
+          <a href="#" class="list-group-item" ng-click="uiCtrl.changeMemberPermissions($event, member, '<%= Funnel::PERMISSION_WRITE_ALL %>');">
+            <h4 class="list-group-item-heading">Administrador</h4>
+            <p class="list-group-item-text">Tiene todos los permisos sobre, el embudo, etapas, negocios y actividades.</p>
+          </a>
+          <a href="#" class="list-group-item" ng-click="uiCtrl.changeMemberPermissions($event, member, '<%= Funnel::PERMISSION_READ_ALL %>' );">
+            <h4 class="list-group-item-heading">Normal</h4>
+            <p class="list-group-item-text">Puede crear nuevos negocios, pasados de etapa, editarlos y crear, editar y marcar actividades.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

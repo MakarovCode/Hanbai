@@ -1,0 +1,115 @@
+es:
+  devise:
+    view:
+      sessions:
+        login: 'Ingresa'
+        log_in: 'Ingresar'        
+        email: 'Correo electrónico'
+        password: 'Contraseña'
+        log_in_button: 'Ingresar'
+        remember_me: 'Recuérdame'
+        welcome: 'Bienvenido'
+      shared:
+        log_in: 'Iniciar sesión'
+        sign_up: 'Regístrate'
+        forgot_your_password: '¿Olvidaste tu contraseña?'
+        forgot_password: 'Olvidaste tu contraseña'
+        didnt_receive_confirmation_instructions: 'No recibí instrucciones de confirmación'
+        didnt_receive_unlock_instructions: 'No recibí instrucciones para desbloquear mi cuenta'
+        login_google_plus: 'Login con google +'
+      registrations:
+        sign_up: 'Regístrate ahora'
+        characters_minimum: 'Caracteres mínimos'
+        password_confirmation: 'Confirmación de contraseña'
+        send_me_reset_password_instructions: 'Enviar al correo'
+        #'Obtener Nueva Contraseña'
+      passwords:
+        send_me_reset_password_instructions: 'Restablecer contraseña'
+        forgot_your_password: '¿Olvidaste tu contraseña?'
+      reset_password:
+        change_password: 'Cambiar contraseña'
+        password: 'Contraseña'
+        password_confirmation: 'Confirmar contraseña'
+    confirmations:
+      confirmed: 'Tu cuenta ha sido confirmada.'
+      confirmed_and_signed_in: 'Tu cuenta ha sido confirmada. Has sido identificado correctamente.'
+      send_instructions: 'Recibirás un correo electrónico en unos minutos con instrucciones sobre cómo restablecer tu contraseña.'
+      send_paranoid_instructions: 'Si tu correo electrónico existe en nuestra base de datos recibirás un correo electrónico en unos minutos con instrucciones sobre cómo reiniciar tu contraseña.'
+      resend_confirmation_instructions: 'Reenviar instrucciones de confirmación'
+    failure:
+      already_authenticated: 'Ya has sido identificado.'
+      inactive: 'Tu cuenta aun no ha sido aprobada.'
+      invalid: 'Usuario o contraseña inválidos.'
+      invalid_token: 'Cadena de autenticación inválida.'
+      locked: 'Tu cuenta ha sido bloqueada.'
+      not_found_in_database: 'Correo o contraseña inválidos.'
+      timeout: 'Tu sesión ha expirado, por favor identifícate de nuevo para continuar.'
+      unauthenticated: 'Necesitas iniciar sesión o registrarte para continuar.'
+      unconfirmed: 'Debes confirmar tu cuenta para continuar.'
+      last_attempt: 'Tienes un intento más, antes de que tu cuenta sea bloqueada.'
+    mailer:
+      confirmation_instructions:
+        subject: 'Instrucciones de confirmación'
+      reset_password_instructions:
+        subject: 'Instrucciones para restablecer tu contraseña'
+        contact_password_change: "Te estamos contactando para notificarte que tu contraseña ha sido cambiada."
+        password_change_request: 'Alguien ha solicitado un enlace para cambiar tu contraseña. Puedes hacerlo a través del siguiente enlace.'
+        not_request_change_password: 'Si no lo has solicitado, por favor, ignora este mensaje.'
+        information_change_password: 'El cambio de tu contraseña no sucederá hasta que accedas al enlace'
+      unlock_instructions:
+        subject: 'Instrucciones de desbloqueo'
+      message: ¡Hola! Confirma tu correo electrónico para acceder a HandelBay
+      confirmation: Haz click en el link para verificar tu correo electrónico empresarial
+      hi: Hola
+      block_account: 'Tu cuenta ha sido bloqueada debido a un excesivo número de intentos de conexión fallidos.'
+      unblock_account: 'Haz clic en el enlace de abajo para desbloquear tu cuenta:'
+      button: Confirmar
+      hello: Saludos,
+      team: Tu equipo de HandelBay
+      message2: Si aún no te registras, por favor haz caso omiso a este email.
+      message3: HANDELBAY ©
+    omniauth_callbacks:
+      failure: 'No se te ha podido autorizar de %{kind} debido a \"%{reason}\".'
+      success: "Identificado correctamente de %{kind}."
+    passwords:
+      no_token: 'No puedes acceder a esta página sino es por medio de un enlace para restablecer contraseña. Si has accedido desde el enlace para restablecer la contraseña, asegúrate de que la URL esté completa.'
+      send_instructions: 'Recibirás un correo electrónico con instrucciones sobre cómo restablecer tu contraseña en unos minutos.'
+      send_paranoid_instructions: 'Si tu correo electrónico existe en nuestra base de datos, recibirás un enlace para restablecer la contraseña en unos minutos.'
+      updated: 'Tu contraseña ha cambiado correctamente. Has sido identificado correctamente.'
+      updated_not_active: 'Tu contraseña ha sido cambiada correctamente.'
+    registrations:  
+      characters_minimum: 'Caracteres mínimos'
+      password_confirmation: 'Confirmación de Contraseña'
+      destroyed: '¡Adiós! Tu cuenta ha sido cancelada. Esperamos volverte a ver pronto.'
+      signed_up: '¡Bienvenido! has sido identificado.'
+      signed_up_but_inactive: 'Te has registrado correctamente, pero no se ha podido iniciar sesión porque tu cuenta no ha sido activada.'
+      signed_up_but_locked: 'Te has registrado correctamente, pero no se ha podido iniciar sesión porque tu cuenta está bloqueada.'
+      signed_up_but_unconfirmed: 'Te hemos enviado un mensaje con un enlace de confirmación. Por favor visita el enlace para activar tu cuenta.'
+      update_needs_confirmation: 'Has actualizado tu cuenta correctamente, sin embargo necesitamos verificar tu nueva cuenta de correo. Por favor revisa tu correo electrónico y visita el enlace para finalizar la confirmación de tu nueva dirección de correo electrónico.'
+      updated: 'Has actualizado tu cuenta correctamente.'
+      sign_up: 'Regístrate ahora'
+      sign_up_: 'Registrarse'
+      sign_in: 'Registrarse'
+      user:
+        signed_up_but_: '¡Bienvenido! Tu cuenta ha sido registrada con éxito. pero debes activar tu cuenta desde el correo electrónico con el cual te has registrado'
+    sessions:
+      signed_in: 'Has iniciado sesión satisfactoriamente.'
+      signed_out: 'Has cerrado la sesión satisfactoriamente.'
+      log_in: Bienvenido
+    unlocks:
+      send_instructions: 'Recibiras un correo electrónico en unos minutos con instrucciones sobre cómo desbloquear tu cuenta.'
+      send_paranoid_instructions: 'Si tu cuenta existe, recibiras un correo electrónico en unos minutos con instrucciones sobre cómo desbloquear la cuenta.'
+      unlocked: 'Tu cuenta ha sido desbloqueada. Por favor inicia sesión para continuar.'
+  errors:
+    messages:
+      already_confirmed: 'ya has sido confirmado, por favor intenta iniciar sesión.'
+      confirmation_period_expired: 'necesitas ser confirmado en %{period}, por favor vuelve a solicitarla.'
+      expired: 'ha expirado, por favor vuelve a solicitarla.'
+      not_found: 'no se encontró.'
+      not_locked: 'no estaba bloqueado.'
+      #not_saved:
+        #one: "1 error impidió que este %{resource} fuese guardado:"
+        #other: "%{count} errores impidieron que este %{resource} fuese guardado:"
+      not_saved:
+        one: ""
+        other: ""

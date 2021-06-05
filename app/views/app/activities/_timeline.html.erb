@@ -1,0 +1,70 @@
+<div class="ui-timline-container" ng-controller="TimelineController as tCtrl" ng-init="tCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token%>')">
+	<section class="ui-timeline" >
+
+		<article class="tl-item">
+			<div class="tl-body">
+				<div class="tl-entry">
+					<div class="tl-caption">
+						<a href="javascript:;" class="btn btn-primary btn-block" ng-click="tCtrl.newActivity($event);">
+							<i class="fa fa-plus" aria-hidden="true"></i>
+							Nueva actividad
+						</a>
+					</div>
+				</div>
+			</div>
+		</article>
+		<!-- <article class="tl-item" ng-hide="timeline_object.activities.length > 0">
+			<div class="tl-body">
+				<div class="tl-entry">
+					<div class="tl-icon round-icon sm" class="bg-primary">
+						<i class="fa fa-info"></i>
+					</div>
+					<div class="tl-content">
+						<h4 class="tl-tile" class="text-primary">
+							Información
+						</h4>
+						<p>
+							Aun no tienes actividades, ¡crea tu primera actividad dando click en + Nueva Actividad!
+						</p>
+					</div>
+				</div>
+			</div>
+		</article> -->
+		<article class="tl-item" ng-repeat="activity in timeline_object.activities" on-last-repeat>
+			<div class="tl-body">
+				<div class="tl-entry">
+					<div class="tl-icon round-icon sm" ng-class="{'bg-primary': activity.status == null || activity.status == 0, 'bg-danger': activity.status == 1, 'bg-success': activity.status == 2}"><i class="fa {{activity.activity_type.icon}}"></i></div>
+					<div class="tl-content">
+						<h4 class="tl-tile" ng-class="{'text-primary': activity.status == null || activity.status == 0, 'text-danger': activity.status == 1, 'text-success': activity.status == 2}">
+							{{activity.title}}
+							<label class="label label-primary pull-right" ng-class="{'label-primary': activity.status == null || activity.status == 0, 'label-danger': activity.status == 1, 'label-success': activity.status == 2}">
+								{{activity.duration}} Min
+							</label>
+							<label class="label label-primary pull-right" ng-class="{'label-primary': activity.status == null || activity.status == 0, 'label-danger': activity.status == 1, 'label-success': activity.status == 2}">
+								{{activity.date_and_time}}
+							</label>
+						</h4>
+						<p ng-repeat="note in activity.notes" ng-bind-html="note.text">
+						</p>
+						<div class="btn-group btn-group-sm pull-right">
+							<button type="button" class="btn btn-success" ng-click="tCtrl.changeActivityStatus($event, activity, 2);" ng-hide="activity.status == 2" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Mover actividad como realizada." data-content="Una actividad realizada es una actividad que ya completaste, al marcar como realizada el sistema te preguntará por una siguiente actividad.">
+								<i class="fa fa-check-square-o" aria-hidden="true"></i>
+							</button>
+							<button type="button" class="btn btn-primary" ng-click="tCtrl.changeActivityStatus($event, activity, 0);" ng-show="activity.status == 2" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Mover actividad como no realizada." data-content="Puedes pasar una actividad de realizada a no realizada, en caso de que te equivoques o te arrepientas.">
+								<i class="fa fa-square-o" aria-hidden="true"></i>
+							</button>
+							<button type="button" class="btn btn-default" ng-click="tCtrl.editActivity($event, activity);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Editar actividad." data-content="Te permite editar esta actividad, puedes editar todos sus datos.">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							</button>
+							<button type="button" class="btn btn-danger" ng-click="tCtrl.changeActivityStatus($event, activity, 3);" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" title="Eliminar actividad." data-content="Al eliminar una actividad no la puedes recuperar y debes crear una nueva en caso de arrepentirte.">
+								<i class="fa fa-trash-o" aria-hidden="true"></i>
+							</button>
+						</div>
+						<br /><br />
+					</div>
+				</div>
+			</div>
+		</article>
+
+	</section>
+</div>

@@ -1,0 +1,38 @@
+<div class="col-md-12" ng-hide="cCtrl.show_calendar == true">
+  <div class="btn-group">
+
+    <button type="button" class="btn btn-default btn-sm" data-target=".modal-new-activity" data-toggle="modal">
+      <i class="fa fa-plus"></i>
+    </button>
+    <button type="button" class="btn btn-default btn-sm" data-target=".modal-search-activities" data-toggle="modal">
+      <i class="fa fa-search"></i>
+    </button>
+  </div>
+
+  <table class="table table-bordered" style="margin-top: 20px;">
+    <tr>
+      <th>Título</th>
+      <th>Tipo</th>
+      <th>Fecha y hora</th>
+      <th>Duración</th>
+      <th>Negocio</th>
+      <th>Contacto</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+    <tr ng-repeat="activity in cCtrl.events_for_list" ng-class="{'success': activity.status == 2, 'danger': activity.status == 1}">
+      <td>{{activity.title}}</td>
+      <td>{{activity.activity_type.name}}</td>
+      <td>{{activity.date}} | {{activity.time}}</td>
+      <td>{{activity.duration}} min</td>
+      <td>{{activity.deal_title}}</td>
+      <td>{{activity.person_name}}</td>
+      <td>{{activity.status_name}}</td>
+      <td>
+        <button type="button" class="btn btn-default btn-sm" ng-click="cCtrl.openActivity(activity)">
+          <i class="fa fa-eye"></i>
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,27 @@
+
+<div class="modal fade modal-delete-company" tabindex="-1" role="dialog" aria-labelledby="modal-delete-company-label">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<%= form_for([:app, @orgnanization], remote: true, url: app_api_v1_organizations_path(:json), method: :delete, html: {id: "delete_company", :"data-object" => "company"}) do |f| %>
+			<%= render "app/layouts/auth" %>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-delete-company-labe"><%= t("organizations.delete.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<%= render "app/layouts/ajax_form_messages" %>
+
+				<div class="form-group row">
+					<div class="col-sm-12 alert alert-warning">
+						<strong>Alerta: </strong>
+						<%= t("organizations.delete.message") %>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<%= render "app/layouts/ajax_form_actions", modal: true, formid: "delete_company", transaltions: "organizations.delete" %>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

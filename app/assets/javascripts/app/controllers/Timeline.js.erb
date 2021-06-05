@@ -1,0 +1,106 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("timeline-module", ['dragularModule', 'ngSanitize']);
+
+	module.controller('TimelineController', ['$timeout', '$interval', '$http', '$scope', 'dragularService', function ($timeout, $interval, $http, $scope, dragularService) {
+		var self = this;
+
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+
+			$('[data-toggle="popover"]').popover();
+
+			$(".modal-new-activity").on('hide.bs.modal', function (e) {
+				$("#modal-show-"+$scope.timeline_object_type).modal("hide");
+			});
+
+			$(".modal-new-activity").on('hidden.bs.modal', function (e) {
+				$scope.$apply(function(){
+					self.getObject();
+					$timeout(function(){
+						$("#modal-show-"+$scope.timeline_object_type).modal("show");
+						// $('.modal-new-activity').modal('handleUpdate');
+					}, 500);
+				});
+			});
+
+			$(".modal-new-activity").on('shown.bs.modal', function (e) {
+				// $('.modal-new-activity').modal('handleUpdate');
+				// $("#show-deal-modal").modal("hide");
+			});
+
+			$("#modal-show-"+$scope.timeline_object_type).on('shown.bs.modal', function (e) {
+				$("#modal-show-"+$scope.timeline_object_type).modal('handleUpdate');
+			});
+
+			$("#modal-show-"+$scope.timeline_object_type).on('hidden.bs.modal', function (e) {
+
+			});
+		}
+
+		this.newActivity = function(event){
+			if (event != null){
+				event.stopPropagation();
+			}
+			$(".modal-new-activity").data($scope.timeline_object_type+"_id", $scope.timeline_object.id);
+			$(".modal-new-activity").data($scope.timeline_object_type, $scope.timeline_object);
+			$(".modal-new-activity").modal("show");
+		}
+
+		this.editActivity = function(event, activity){
+			event.stopPropagation();
+			$(".modal-new-activity").data("event", activity);
+			$(".modal-new-activity").modal("show");
+			// $(".modal-new-activity").data("deal_id", this.selected_deal.id);
+		}
+
+		this.changeActivityStatus = function(event, activity, _status){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				status: _status
+			};
+			activity.status = _status;
+
+			$http.post("/app/api/v1/activities/"+activity.id+"/change_status.json", params).then(
+				function(res, status){
+					if (_status == 3){
+						for (var i = 0; i < $scope.timeline_object.activities.length; i ++){
+							if ($scope.timeline_object.activities[i].id == activity.id){
+								$scope.timeline_object.activities.splice(i, 1);
+								break;
+							}
+						}
+					}
+					self.newActivity(null);
+					self.getObject();
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.getObject = function(){
+			if ($scope.timeline_object_type == "person"){
+				$scope.getPerson($scope.timeline_object, true);
+			}
+			else if ($scope.timeline_object_type == "deal"){
+				$scope.getDeal($scope.timeline_object, true);
+			}
+			else if ($scope.timeline_object_type == "company"){
+				$scope.getCompany($scope.timeline_object, true);
+			}
+		}
+
+		$scope.$on('onRepeatLast', function(scope, element, attrs) {
+			console.log("TIMELINE IN");
+			$('[data-toggle="popover"]').popover();
+		});
+
+	}]);
+})();

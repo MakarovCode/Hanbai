@@ -1,0 +1,50 @@
+<div ng-show="deal.id == null">
+  <label>Título del negocio</label>
+  <input type="text" class="form-control" ng-model="deal.title"/>
+  <br />
+  <label>Nombre de contacto</label>
+  <!-- <input type="text" class="form-control" ng-model="deal.person_id" style="display:none;" id="funnel_deal_person_id"/> -->
+  <%#= autocomplete_field_tag :person_autocomplete, '', autocomplete_app_api_v1_people_path, id_element: "#funnel_deal_person_id" ,
+  :"data-autocomplete-label" => "No se encontraron registros.", class: "form-control" %>
+
+  <div class="input-group">
+    <%= autocomplete_field_tag :person_autocomplete, '', autocomplete_app_api_v1_people_path, id_element: "#funnel_deal_person_id" ,
+    :"data-autocomplete-label" => "No se encontraron registros.", class: "form-control ", :"ng-model" => "deal.person_name", :"data-object" => "person" , :"ng-readonly" => "deal.person_id != null && deal.person_id != ''", :"ng-blur" => "fCtrl.autocompleteChange($event, deal)" %>
+    <input type="text" id="funnel_deal_person_id" ng-model="deal.person_id" style="display:none;" class="autocomplete_id_field" data-object="person">
+    <span class="input-group-btn">
+      <button class="btn btn-danger" type="button" ng-show="deal.person_id != null && deal.person_id != ''" ng-click="deal.person_id = null; deal.person_name = null">
+        <i class="fa fa-pencil-square-o"></i>
+      </button>
+    </span>
+  </div>
+  <div class="row" id="autocomplete-info" ng-show="deal.person_name != null && deal.person_name != '' && (deal.person_id == null || deal.person_id == '')">
+    <div class="col-md-12 alert alert-info">
+      Se creará un registro con este nombre.
+    </div>
+  </div>
+
+  <br />
+  <label>Valor del negocio</label>
+  <input type="number" class="form-control" ng-model="deal.total"/>
+  <br />
+  <label>Comisión</label>
+  <input type="number" class="form-control" ng-model="deal.commission" min="0"/>
+  <br />
+  <label>Fecha esperada de cierre</label>
+  <input type="text" class="form-control datepicker-new-deal" ng-model="deal.estimated_close_date"/>
+  <br />
+  
+  <%= render "extra_fields_deal"%>
+
+  <div class="alert alert-danger" ng-hide="fCtrl.new_deal_error == null">
+    <strong>{{fCtrl.new_deal_message}}</strong><br>
+    {{fCtrl.new_deal_error}}
+  </div>
+  <br />
+  <button type="button" class="btn btn-primary" ng-click="fCtrl.createDeal(stage, deal)">
+    <i class="fa fa-plus"></i> Guardar
+  </button>
+  <button type="button" class="btn btn-danger" ng-click="fCtrl.cancelNewDeal(stage)">
+    <i class="fa fa-ban"></i> Cancelar
+  </button>
+</div>

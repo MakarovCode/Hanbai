@@ -1,0 +1,205 @@
+<div class="row">
+  <div class="col-md-12">
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        <strong>
+          <span class="fa fa-credit-card"></span> <%= t("account.index.title")%>
+        </strong>
+      </div>
+      <div class="panel-body">
+        <% if !current_user.is_gold %>
+        <div class="row">
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-info">
+              <header>Silver</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>Grátis/Free</strong>
+                </div>
+                <ul>
+                  <li>Conoce nuestra herramienta</li>
+                  <li><strong>1</strong> Embudo</li>
+                  <li><strong>5</strong> Negocios por embudo</li>
+                  <li><strong>Métricas</strong> Solo del més actual</li>
+                </ul>
+              </div>
+              <footer>
+              </footer>
+            </section>
+          </div>
+
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-primary">
+              <header>Gold Mensual</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>$ 20.000 COP/més</strong>
+                </div>
+                <ul>
+                  <li>Precio sin descuento</li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "month"), method: :post, class: "btn btn-primary" %>
+              </footer>
+            </section>
+          </div>
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-warning">
+              <header>Gold Semestral</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>$ 75.000 COP/semestre</strong>
+                </div>
+                <ul>
+                  <li>Ahorras <strong>17%</strong></li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "semester"), method: :post, class: "btn btn-warning" %>
+              </footer>
+            </section>
+          </div>
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-success">
+              <header>Gold Año</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>
+                    <i class="fa fa-star" style=color:yellow></i>
+                    $ 100.000 COP/año
+                  </strong>
+                </div>
+                <ul>
+                  <li>Ahorras <strong>38%</strong></li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "year"), method: :post, class: "btn btn-success" %>
+              </footer>
+            </section>
+          </div>
+        </div>
+        <% elsif current_user.is_gold && current_user.is_gold_expiring %>
+        <div class="row">
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-danger">
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>
+                    CUENTA A PUNTO DE VENCER <br>
+                    <i class="fa fa-info-circle fa-5x"></i>
+                  </strong>
+                </div>
+                <ul>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+              </footer>
+            </section>
+          </div>
+
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-primary">
+              <header>Gold Mensual</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>$ 20.000 COP/més</strong>
+                </div>
+                <ul>
+                  <li>Precio sin descuento</li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "month"), method: :post, class: "btn btn-primary" %>
+              </footer>
+            </section>
+          </div>
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-warning">
+              <header>Gold Semestral</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>$ 75.000 COP/semestre</strong>
+                </div>
+                <ul>
+                  <li>Ahorras <strong>17%</strong></li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "semester"), method: :post, class: "btn btn-warning" %>
+              </footer>
+            </section>
+          </div>
+          <div class="col-md-3 col-xsm-6">
+            <section class="pricing-table pricing-table-success">
+              <header>Gold Año</header>
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>$ 100.000 COP/año</strong>
+                </div>
+                <ul>
+                  <li>Ahorras <strong>38%</strong></li>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                </ul>
+              </div>
+              <footer>
+                <%= link_to "Comprar", app_user_account_index_path(period: "year"), method: :post, class: "btn btn-success" %>
+              </footer>
+            </section>
+          </div>
+        </div>
+        <% else %>
+        <div class="row">
+          <div class="col-md-4 col-md-offset-4 col-xsm-6">
+            <section class="pricing-table pricing-table-warning">
+              <div class="pricing-body">
+                <div class="pricing-price">
+                  <strong>
+                    Usuario GOLD <br>
+                    <i class="fa fa-trophy fa-5x"></i>
+                  </strong>
+                </div>
+                <ul>
+                  <li>Embudo <strong>ilimitados</strong></li>
+                  <li>Negocios <strong>ilimitados</strong></li>
+                  <li><strong>Métricas</strong> totales</li>
+                  <li>
+                    <% unless current_user.last_payment.nil? %>
+                    <button class="btn btn-lg btn-warning" type="button">
+                      Tienes <%= distance_of_time_in_words(Time.now, current_user.last_payment.end_date)%> de cuenta GOLD
+                    </button>
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+              <footer>
+              </footer>
+            </section>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

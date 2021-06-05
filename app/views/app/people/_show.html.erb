@@ -1,0 +1,90 @@
+
+<div class="modal fade" id="modal-show-person" tabindex="-1" role="dialog" aria-labelledby="modal-show-person-label" ng-controller="ShowPersonController as sCtrl" ng-init="sCtrl.initialize('<%= current_user.uuid%>', '<%= current_user.authentication_token%>')">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="modal-show-person-label"><%= t("people.show.title")%></h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-4">
+						<h4>
+							Información de contacto
+						</h4>
+						<p>
+							<b>Contacto:</b><br>
+							{{sCtrl.person.name}}
+						</p>
+						<p ng-hide="sCtrl.person.company == ''">
+							<b>Organización:</b><br>
+							<span ng-hide="sCtrl.person.company == ''">
+								{{sCtrl.person.company.name}}
+							</span>
+							<!-- <div class="col-md-12 alert alert-info" ng-show="sCtrl.person.company == ''">
+								No registraste este contacto en ninguna organización
+							</div> -->
+						</p>
+						<p ng-show="sCtrl.person.phones.length > 0">
+							<b>Teléfonos:</b><br>
+							<ul ng-show="sCtrl.person.phones.length > 0">
+								<li ng-repeat="phone in sCtrl.person.phones">{{phone.phone}}</li>
+							</ul>
+							<!-- <div class="col-md-12 alert alert-info" ng-hide="sCtrl.person.phones.length > 0">
+								No has registrado teléfonos para este contacto
+							</div> -->
+						</p>
+						<p ng-show="sCtrl.person.emails.length > 0">
+							<b>Direcciones de correo:</b><br>
+							<ul ng-show="sCtrl.person.emails.length > 0">
+								<li ng-repeat="email in sCtrl.person.emails">{{email.email}}</li>
+							</ul>
+							<!-- <div class="col-md-12 alert alert-info" ng-hide="sCtrl.person.emails.length > 0">
+								No has registrado correos para este contacto
+							</div> -->
+						</p>
+						<p ng-repeat="extra_field_contact in sCtrl.person.extra_field_contacts">
+							<b>{{extra_field_contact.extra_field.name}}:</b><br>
+							<span>{{extra_field_contact.value}}</span>
+						</p>
+					</div>
+					<div class="col-md-8">
+						<h4>
+							Estadísticas
+						</h4>
+						<div class="row">
+							<div class="col-md-6">
+								<h5>
+									Negocios
+								</h5>
+								<div id="deals" ng-hide="sCtrl.person.won_deals_count == 0 && sCtrl.person.open_deals_count == 0 && sCtrl.person.closed_deal_count == 0"></div>
+								<div class="alert alert-info" ng-show="sCtrl.person.won_deals_count == 0 && sCtrl.person.open_deals_count == 0 && sCtrl.person.closed_deal_count == 0">
+									¡Aun no tienes negocios con este contacto!
+								</div>
+							</div>
+							<div class="col-md-6">
+								<h5>
+									Actividades
+								</h5>
+								<div id="activities" ng-hide="sCtrl.person.done_activities_count == 0 && sCtrl.person.undone_activities_count == 0"></div>
+								<div class="alert alert-info" ng-show="sCtrl.person.done_activities_count == 0 && sCtrl.person.undone_activities_count == 0">
+									¡Aun no tienes actividades con este contacto!
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<%= render "/app/activities/timeline" %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default cancel-button" data-dismiss="modal">
+					<%= t("people.show.cancel_action") %>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

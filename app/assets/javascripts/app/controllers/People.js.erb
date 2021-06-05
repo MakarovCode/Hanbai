@@ -1,0 +1,287 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("people-module", ['ui.calendar', 'ui.tinymce']);
+
+	module.controller('PeopleController', ['$http', '$scope', 'uiCalendarConfig', function ($http, $scope, uiCalendarConfig) {
+		var self = this;
+		this.people = null;
+		this.companies = [];
+		this.order_by = "name";
+		this.order_type = "";
+		this.only_trash = false;
+		this.person_to_edit = null;
+		this.field_to_edit = null;
+
+
+		/* Autor: Simon Correa
+		*
+		* Fecha creacion: 2016-11-21
+		*
+		* Autor actualizacion:
+		*
+		* Fecha actualizacion:
+		*
+		*
+		*/
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+			this.getPeople();
+			this.getCompanies();
+
+			$('.modal').on('hidden.bs.modal', function (e) {
+				$scope.$apply(function(){
+					self.getCompanies();
+					if (self.only_trash == true){
+						self.getPeople(true);
+					}
+					else {
+						self.getPeople();
+					}
+				});
+			});
+		}
+
+		this.orderBy = function(field){
+			if (this.order_type == ""){
+				this.order_type = "-"
+			}
+			else{
+				this.order_type = ""
+			}
+			this.order_by = this.order_type+field;
+		}
+
+		this.showPerson = function(person){
+			$("#modal-show-person").data("person", person);
+			$("#modal-show-person").modal("show");
+		}
+
+		this.getTrash = function(){
+			this.getPeople(true);
+		}
+
+		this.getPeople = function(only_trash){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token
+			};
+
+			if (only_trash != null){
+				params["only_trash"] = true;
+				this.only_trash = true;
+			}
+			else{
+				this.only_trash = false;
+			}
+
+			$http.get("/app/api/v1/people.json", {params: params}).then(
+				function(res, status){
+					self.people = res.data;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.getCompanies = function(){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token
+			};
+
+			$http.get("/app/api/v1/organizations/autocomplete.json", {params: params}).then(
+				function(res, status){
+					self.companies = res.data;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.deletePerson = function(person){
+			var update_url = "/app/api/v1/people/";
+			var form = $("#delete_person");
+			form.prop("action", update_url+person.id);
+			$(".modal-delete-person").modal("show");
+		}
+
+		this.restorePerson = function(person){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token
+			};
+
+			$http.delete("/app/api/v1/people/"+person.id+".json", {params: params}).then(
+				function(res, status){
+					person.status = 0;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.editPerson = function(person, field){
+			this.field_to_edit = field;
+			this.person_to_edit = person;
+		}
+
+		this.updatePerson = function(element, person, field){
+
+			this.field_to_edit = null;
+			this.person_to_edit = null;
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token
+			};
+
+			params[field] = person[field];
+
+
+			$http.put("/app/api/v1/people/"+person.id+".json", params).then(
+				function(res, status){
+					if (field == "company_id"){
+						person.company = res.data.company
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.addPhoneToPerson = function(person){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				phone: person.new_phone
+			};
+
+			person.new_phone = null;
+
+			$http.post("/app/api/v1/people/"+person.id+"/create_phone.json", params).then(
+				function(res, status){
+					person.phones.push(res.data.phone);
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.deletePhoneFromPerson = function(person, phone){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				phone_id: phone.id
+			};
+
+			for (var i = 0; i < person.phones.length; i ++){
+				if (person.phones[i].id == phone.id){
+					person.phones.splice(i, 1);
+				}
+			}
+
+			$http.delete("/app/api/v1/people/"+person.id+"/delete_phone.json", {params: params}).then(
+				function(res, status){
+
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.addEmailToPerson = function(person){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				email: person.new_email
+			};
+
+			person.new_email = null;
+
+			$http.post("/app/api/v1/people/"+person.id+"/create_email.json", params).then(
+				function(res, status){
+					person.emails.push(res.data.email);
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.deleteEmailFromPerson = function(person, email){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				email_id: email.id
+			};
+
+			for (var i = 0; i < person.emails.length; i ++){
+				if (person.emails[i].id == email.id){
+					person.emails.splice(i, 1);
+				}
+			}
+
+			$http.delete("/app/api/v1/people/"+person.id+"/delete_email.json", {params: params}).then(
+				function(res, status){
+
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.addAddressToPerson = function(person){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				address: person.new_address
+			};
+
+			person.new_address = null;
+
+			$http.post("/app/api/v1/people/"+person.id+"/create_address.json", params).then(
+				function(res, status){
+					person.addresses.push(res.data.address);
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.deleteAddressFromPerson = function(person, address){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				address_id: address.id
+			};
+
+			for (var i = 0; i < person.addresses.length; i ++){
+				if (person.addresses[i].id == address.id){
+					person.addresses.splice(i, 1);
+				}
+			}
+
+			$http.delete("/app/api/v1/people/"+person.id+"/delete_address.json", {params: params}).then(
+				function(res, status){
+
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+	}]);
+})();

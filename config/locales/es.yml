@@ -1,0 +1,426 @@
+es:
+  menu:
+    sign_in: "Ingresar"
+    sign_up: "Regístrate"
+    home: "Inicio"
+    contact_us: "Contáctanos"
+    blog: "Blog"
+  sidebar:
+    deals: "Negocios"
+    contacts: "Contactos"
+    people: "Personas"
+    organizations: "Organizaciones"
+    activities: "Actividades"
+    setups: "Configuraciones"
+    profile: "Mi Perfil"
+    account: "Mi Cuenta"
+    payments: "Mis Pagos"
+    stats: "Estadísticas"
+    account: "Mi cuenta"
+  sign_in:
+    title: "Iniciar sesión"
+    main_action: "Ingresar"
+  sign_up:
+    title: "Regístrate"
+    main_action: "Regístrate"
+  forgot_pass:
+    title: "Olvidé mi contraseña"
+    main_action: "Olvidé mi contraseña"
+  change_pass:
+    title: "Cambia tu clave"
+    main_action: "Cambiar clave"
+  confirmations:
+    title: "Confirmar cuenta"
+    main_action: "Confirmar cuenta"
+  unlocks:
+    title: "Desploquear cuenta"
+    main_action: "Desploquear cuenta"
+  social:
+    main_action: "Ingresar con"
+  blog:
+    by: "Por"
+  organizations:
+    title: Organizaciones
+    show:
+      title: Detalles de organización
+      cancel_action: Cancelar
+    new:
+      title: Adicionar organización
+      main_action: Guardar
+      cancel_action: Cancelar
+    edit:
+      title: Actualizar organización
+      main_action: Actualizar
+      cancel_action: Cancelar
+    delete:
+      title: Borrar organización
+      message: Al borrar este registro pasará a tu papelera y no podrá ser seleccionado para Actividades ni Negocios hasta no ser reestablecido.
+      main_action: Borrar
+      cancel_action: Cancelar
+    import:
+      title: "Importar organizaciones"
+      label: "Archivo con formato: (.xls, .xlsx, .csv)"
+      message: "Descarga la plantilla para que tu archivo pueda ser leído por el sistema."
+      main_action: Cargar
+      cancel_action: Cancelar
+  people:
+    title: Contactos
+    show:
+      title: Detalles de contacto
+      cancel_action: Cancelar
+    new:
+      title: Adicionar contacto
+      main_action: Guardar
+      cancel_action: Cancelar
+    edit:
+      title: Actualizar contacto
+      main_action: Actualizar
+      cancel_action: Cancelar
+    delete:
+      title: Borrar contacto
+      message: Al borrar este registro pasará a tu papelera y no podrá ser seleccionado para Actividades ni Negocios hasta no ser reestablecido.
+      main_action: Borrar
+      cancel_action: Cancelar
+    import:
+      title: "Importar contactos"
+      label: "Archivo con formato: (.xls, .xlsx, .csv)"
+      message: "Descarga la plantilla para que tu archivo pueda ser leído por el sistema."
+      main_action: Cargar
+      cancel_action: Cancelar
+  activities:
+    title: Actividades
+    new:
+      title: Formulario de actividad
+      main_action: Guardar
+      cancel_action: Cancelar
+      delete_action: Borrar
+    edit:
+      title: Formulario de actividad
+      main_action: Actualizar
+      cancel_action: Cancelar
+      delete_action: Borrar
+    delete:
+      title: Borrar contacto
+      message: Al borrar este registro pasará a tu papelera y no podrá ser seleccionado para Actividades ni Negocios hasta no ser reestablecido.
+      main_action: Borrar
+      cancel_action: Cancelar
+    import:
+      title: "Importar contactos"
+      label: "Archivo con formato: (.xls, .xlsx, .csv)"
+      message: "Descarga la plantilla para que tu archivo pueda ser leído por el sistema."
+      main_action: Cargar
+      cancel_action: Cancelar
+    search:
+      title: "Buscar Actividades"
+      clean_action: "Limpiar"
+      main_action: "Buscar"
+      cancel_action: "Cancelar"
+  users:
+    edit:
+      title: "Editar Perfil"
+      change_pass: "Cambiar clave"
+      main_action: "Actualizar Perfil"
+    api_info:
+      title: "Información de API"
+  setup:
+    title: "Configuraciones"
+  account:
+    index:
+      title: "Mi cuenta"
+  date:
+    month_names_complete:
+      Jan: 'Enero'
+      Feb: 'Febrero'
+      Mar: 'Marzo'
+      Apr: 'Abril'
+      May: 'Mayo'
+      Jun: 'Junio'
+      Jul: 'Julio'
+      Aug: 'Agosto'
+      Sep: 'Septiembre'
+      Oct: 'Octubre'
+      Nov: 'Noviembre'
+      Dec: 'Diciembre'
+    week_names_complete:
+      Mon: Lunes
+      Tue: Martes
+      Wen: Miercoles
+      Thu: Jueves
+      Fri: Viernes
+      Sat: Sabado
+      Sun: Domingo
+    abbr_day_names:
+    - dom
+    - lun
+    - mar
+    - mié
+    - jue
+    - vie
+    - sáb
+    abbr_month_names:
+    - ene
+    - feb
+    - mar
+    - abr
+    - may
+    - jun
+    - jul
+    - ago
+    - sep
+    - oct
+    - nov
+    - dic
+    day_names:
+    - domingo
+    - lunes
+    - martes
+    - miércoles
+    - jueves
+    - viernes
+    - sábado
+    formats:
+      default: ! '%d/%m/%Y'
+      long: ! '%A, %d de %B de %Y'
+      short: ! '%d de %b'
+      only_month: ! '%B'
+    month_names:
+    - none
+    - enero
+    - febrero
+    - marzo
+    - abril
+    - mayo
+    - junio
+    - julio
+    - agosto
+    - septiembre
+    - octubre
+    - noviembre
+    - diciembre
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: cerca de 1 hora
+        other: cerca de %{count} horas
+      about_x_months:
+        one: cerca de 1 mes
+        other: cerca de %{count} meses
+      about_x_years:
+        one: cerca de 1 año
+        other: cerca de %{count} años
+      almost_x_years:
+        one: casi 1 año
+        other: casi %{count} años
+      half_a_minute: medio minuto
+      less_than_x_minutes:
+        one: menos de 1 minuto
+        other: menos de %{count} minutos
+      less_than_x_seconds:
+        one: menos de 1 segundo
+        other: menos de %{count} segundos
+      over_x_years:
+        one: más de 1 año
+        other: más de %{count} años
+      x_days:
+        one: 1 día
+        other: ! '%{count} días'
+      x_minutes:
+        one: 1 minuto
+        other: ! '%{count} minutos'
+      x_months:
+        one: 1 mes
+        other: ! '%{count} meses'
+      x_seconds:
+        one: 1 segundo
+        other: ! '%{count} segundos'
+    prompts:
+      day: Día
+      hour: Hora
+      minute: Minuto
+      month: Mes
+      second: Segundos
+      year: Año
+  errors: &errors
+    format: ! '%{attribute} %{message}'
+    messages:
+      accepted: Debe ser aceptado
+      blank: No puede estar en blanco
+      confirmation: No coincide con la confirmación
+      empty: No puede estar vacío
+      equal_to: Debe ser igual a %{count}
+      even: Debe ser un número par
+      exclusion: Está reservado
+      greater_than: Debe ser mayor que %{count}
+      greater_than_or_equal_to: debe ser mayor o igual que %{count}
+      inclusion: no está incluído en la lista
+      invalid: Es inválido
+      less_than: debe ser menor que %{count}
+      less_than_or_equal_to: debe ser menor o igual que %{count}
+      not_a_number: No es un número
+      not_an_integer: Debe ser un entero
+      odd: Debe ser un número impar
+      record_invalid: ! 'La validación falló: %{errors}'
+      taken: Ya ha sido tomado!
+      file_size_is_in: ! 'Tamaño del archivo debe estar entre %{min} y %{max}'
+      file_size_is_less_than: ! 'Tamaño del archivo debe ser menor a %{count}'
+      file_size_is_less_than_or_equal_to: ! 'Tamaño del archivo debe ser menor o igual a %{count}'
+      file_size_is_greater_than: ! 'Tamaño del archivo debe ser mayor %{count}'
+      file_size_is_greater_than_or_equal_to: ! 'Tamaño del archivo debe ser mayor o igual a %{count}'
+      allowed_file_content_types: ! 'file should be one of %{types}'
+      excluded_file_content_types: ! 'file cannot be %{types}'
+      too_long:
+        one: Es demasiado largo (máximo 1 caracter)
+        other: Es demasiado largo (máximo %{count} caracteres)
+      too_short:
+        one: Es demasiado corto (mínimo 1 caracter)
+        other: Es demasiado corto (mínimo %{count} caracteres)
+      wrong_length:
+        one: Longitud errónea (debe ser de 1 caracter)
+        other: Longitud errónea (debe ser de %{count} caracteres)
+    template:
+      body: ! 'Revise que los siguientes campos sean válidos:'
+      header:
+        one: ! '%{model} no pudo guardarse debido a 1 error'
+        other: ! '%{model} no pudo guardarse debido a %{count} errores'
+  helpers:
+    select:
+      prompt: Por favor selecciona
+    submit:
+      create: Crear %{model}
+      submit: Guardar %{model}
+      update: Actualizar %{model}
+  number:
+    currency:
+      format:
+        delimiter: ! ','
+        format: ! '%u%n'
+        precision: 0
+        separator: .
+        significant: false
+        strip_insignificant_zeros: false
+        unit: $
+    format:
+      delimiter: ! ','
+      precision: 2
+      separator: .
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: ! '%n %u'
+        units:
+          billion: mil millones
+          million: millón
+          quadrillion: mil billones
+          thousand: mil
+          trillion: billón
+          unit: ''
+      format:
+        delimiter: ! ','
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: ! '%n %u'
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ! ','
+    precision:
+      format:
+        delimiter: ! ','
+  support:
+    array:
+      last_word_connector: ! ' y '
+      two_words_connector: ! ' y '
+      words_connector: ! ', '
+  formtastic:
+    :yes: 'Yes'
+    :no: 'No'
+    :create: 'Crear %{model}'
+    :update: 'Actualizar %{model}'
+    :submit: 'Enviar %{model}'
+    :cancel: 'Cancel %{model}'
+    :reset: 'Resetear %{model}'
+    :required: 'Requerido'
+  time:
+    am: am
+    formats:
+      default: ! '%a, %d de %b de %Y a las %H:%M:%S %Z'
+      long: ! '%A, %d de %B de %Y a las %I:%M %p'
+      short: ! '%d de %b a las %H:%M hrs'
+    pm: pm
+  activemodel:
+    errors:
+      <<: *errors
+  activerecord:
+    errors:
+      <<: *errors
+    models:
+       admin_user:
+         one: Usuario administrador
+         other: Usuarios administradores
+       user:
+         one: Usuario
+         other: Usuarios
+    attributes:
+      user:
+        id: id
+        email: Correo electrónico
+        name: Nombres
+        status: Estado
+        birthday: Fecha de cumpleaños
+        password: Contraseña
+        password_confirmation: Confirmar contraseña
+        created_at: Creado el
+        updated_at: Actualizado el
+        remember_me: Recordarme
+        uuid: UUID
+        profession: "Profesión"
+        authentication_token: Token de autenticación
+      setup:
+        id: id
+        remember_me_notifications: Recibir notificaciones
+        moment_to_be_remember: ¿Cuando quieres que te recordemos?
+      company:
+        name: Nombre
+        address: Dirección
+      person:
+        name: Nombre
+        address: Dirección
+        company: Organización
+        company_id: Organización
+        role: Cargo/Rol
+        notes: Notas
+      person_phone:
+        phone: Teléfono
+      person_email:
+        email: Correo electrónico
+      activity:
+        activity_type: Tipo de actividad
+        activity_type_id: Tipo de actividad
+        title: Título
+        duration: Duración
+        user: Encargado
+        user_id: Encargado
+        deal: Negocio asociado
+        deal_id: Negocio asociado
+        person: Contacto asociado
+        person_id: Contacto asociado
+      contact:
+        name: Nombre
+        email: Correo electrónico
+        phone: Teléfono
+        subject: Asunto
+        message: Mensaje

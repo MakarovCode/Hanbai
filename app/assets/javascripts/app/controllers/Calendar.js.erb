@@ -1,0 +1,246 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("calendar-module", ['ui.calendar']);
+
+	module.controller('CalendarController', ['$http', '$scope', 'uiCalendarConfig', function ($http, $scope, uiCalendarConfig) {
+		var self = this;
+
+		this.url = "/app/api/v1/activities.json";
+		this.filters = [true, true, true];
+		this.search_term = null;
+		this.event_to_edit = null;
+		this.events_for_list = [];
+
+		this.show_calendar = true;
+
+		this.toggleCalendar = function(){
+			this.show_calendar = !this.show_calendar;
+			if (this.show_calendar == false){
+				this.getActivities();
+			}
+		}
+
+		this.getActivities = function(){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				statuses: JSON.stringify(this.getUrl().data.statuses),
+				term: this.getUrl().data.term
+			};
+
+			$http.get(this.getUrl().url, {params: params}).then(
+				function(res, status){
+					self.events_for_list = res.data;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.openActivity = function(activity){
+			var events = angular.element('#activitiesCalendar').fullCalendar( 'clientEvents', activity.id  ) //[, idOrFilter ]
+			if (events.length > 0){	
+				$(".modal-new-activity").data("event", events[0]);
+				$(".modal-new-activity").modal("show");
+			}
+		}
+
+		setTimeout(function(){
+			$(".custom-calendar-icon").removeClass("fc-icon fc-icon-fa");
+		},500);
+
+		this.getUrl = function(){
+			var event = {
+				url: "/app/api/v1/activities.json",
+				type: "GET",
+				data: {}
+			}
+			var filters = [];
+			if (this.filters[0] == true){
+				filters.push(0)
+			}
+			if (this.filters[1] == true){
+				filters.push(1)
+			}
+			if (this.filters[2] == true){
+				filters.push(2)
+			}
+			if (filters.length > 0){
+				event.data["statuses"] = filters
+			}
+			if (this.search_term != null){
+				event.data["term"] = this.search_term
+			}
+			return event;
+		}
+
+		this.cleanFilters = function(){
+			this.filters = [true, true, true];
+			this.search_term = null;
+			this.applyFilters();
+		}
+
+		this.applyFilters = function(){
+			angular.element('#activitiesCalendar').fullCalendar( 'removeEventSources');
+
+			angular.element('#activitiesCalendar').fullCalendar( 'addEventSource', this.getUrl() )
+			this.getActivities();
+		}
+
+		this.activities = [];
+
+		/* config object */
+		$scope.uiConfig = {
+			calendar: {
+				events: self.getUrl(),
+				locale: 'es',
+				timezone: 'local',
+				timeFormat: 'hh:mm a',
+				height: $(window).height() - 80,
+				editable: true,
+				header:{
+					left: 'month,agendaWeek,agendaDay new_activity,search,filter',
+					center: 'title',
+					right: 'today prev,next'
+				},
+				customButtons: {
+					new_activity: {
+						icon: "fa custom-calendar-icon fa fa-plus",
+						text: 'Nueva actividad',
+						click: function() {
+							$(".modal-new-activity").modal("show");
+						}
+					},
+					search: {
+						icon: "fa custom-calendar-icon fa fa-search",
+						text: 'Buscar',
+						click: function() {
+							$(".modal-search-activities").modal("show");
+						}
+					}
+				},
+				loading: function(isLoading){
+
+				},
+				eventClick: function(event, jsEvent, view){
+					$(".modal-new-activity").data("event", event);
+					$(".modal-new-activity").modal("show");
+				},
+				eventDrop: function(event, delta, revertFunc, jsEvent, ui, view){
+					//MODIFICAR START DATE
+
+					var start_date_str = event.date + " " + event.time;
+					debugger;
+					var start_date = moment(start_date_str);
+					start_date.add(delta._data.years, "years");
+					start_date.add(delta._data.months, "months");
+					start_date.add(delta._data.days, "days");
+					start_date.add(delta._data.hours, "hours");
+					start_date.add(delta._data.minutes, "minutes");
+
+					event.date = start_date.format("YYYY-MM-D");
+					event.time = start_date.format("hh:mm A");
+
+					// var start_date_str = event.date + " " + event.time;
+					// var start_date = new Date(event.date + " " + event.time);
+					//
+					// start_date.setFullYear(start_date.getFullYear() + delta._data.years);
+					// start_date.setMonth(start_date.getMonth() + delta._data.months);
+					// start_date.setDate(start_date.getDate() + delta._data.days);
+					// start_date.setHours(start_date.getHours() + 5 + delta._data.hours);
+					// start_date.setMinutes(start_date.getMinutes() + delta._data.minutes);
+					//
+					// var day = start_date.getDate();
+					// var month = start_date.getMonth() + 1;
+					// var year = start_date.getFullYear();
+					// var hour = start_date.getHours();
+					// var minutes = start_date.getMinutes();
+					//
+					// event.date = year + "-" + month + "-" + day;
+					// event.time = hour + ":" + minutes + ":00";
+
+					self.event_to_edit = event;
+					self.save();
+				},
+				eventResize: function(event, delta, revertFunc, jsEvent, ui, view){
+
+					event.duration = parseInt(event.duration) + (delta._data.days * 24 * 60) + (delta._data.hours * 60) + delta._data.minutes;
+					event.duration += "";
+
+					// var start_date_str = event.date + " " + event.time;
+					// var start_date = new Date(event.date + " " + event.time);
+					//
+					// start_date.setFullYear(start_date.getFullYear() + delta._data.years);
+					// start_date.setMonth(start_date.getMonth() + delta._data.months);
+					// start_date.setDate(start_date.getDate() + delta._data.days);
+					// start_date.setHours(start_date.getHours() + 5 + delta._data.hours);
+					// start_date.setMinutes(start_date.getMinutes() + delta._data.minutes);
+					//
+					// var day = start_date.getDate();
+					// var month = start_date.getMonth() + 1;
+					// var year = start_date.getFullYear();
+					// var hour = start_date.getHours();
+					// var minutes = start_date.getMinutes();
+					//
+					// event.date = year + "-" + month + "-" + day;
+					// event.time = hour + ":" + minutes + ":00";
+					// event.duration = parseInt(event.duration) + (delta._data.days * 24 * 60) + (delta._data.hours * 60) + delta._data.minutes;
+
+					self.event_to_edit = event;
+					self.save();
+
+				},
+				dayClick: function(date, jsEvent, view){
+					// $(".modal-new-activity").data("date", date);
+					// $(".modal-new-activity").modal("show");
+				},
+			}
+		};
+
+
+		$(".modal-new-activity").on('hidden.bs.modal', function (e) {
+			angular.element('#activitiesCalendar').fullCalendar( 'refetchEvents');
+		});
+
+		/* Autor: Simon Correa
+		*
+		* Fecha creacion: 2016-11-21
+		*
+		* Autor actualizacion:
+		*
+		* Fecha actualizacion:
+		*
+		*
+		*/
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+		}
+
+		this.save = function(){
+
+			var params = {
+				user_uuid: "",
+				user_token: "",
+				activity: {
+					date_and_time: this.event_to_edit.date + " " + this.event_to_edit.time + " " + new Date().toString().match(/([-\+][0-9]+)\s/)[1],
+					duration: this.event_to_edit.duration
+				}
+			}
+
+			$http.put("/app/api/v1/activities/"+this.event_to_edit.id+".json", params).then(
+				function(res, status){
+					this.event_to_edit = null;
+					console.log("Calendar edit success: " + res.data.message);
+				},
+				function(res, status){
+					this.event_to_edit = null;
+					console.log("Calendar edit error" + res.data.message + " -> " + res.data.errors);
+				});
+			}
+
+		}]);
+	})();

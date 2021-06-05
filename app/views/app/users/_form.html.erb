@@ -1,0 +1,138 @@
+<%= nested_form_for [:app, @user], html: {class: "form-horizontal"} do |f| %>
+<div class="form-group">
+	<div class="col-sm-2">
+		<% if @user.image.url.nil? %>
+		<%= gravatar_image_tag(@user.email, alt: "#{@user.email}", :gravatar => { :rating => 'pg' } , class: "img-circle img200_200", style: "width: 100px;") %>
+		<% else %>
+		<%= image_tag @user.image.square.url, style: "width: 100px; border-radius: 10px;" %>
+		<% end %>
+	</div>
+	<%= f.label :image, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.file_field :image, class: "form-control #{'input-danger' if @user.errors.include?(:image)}" %>
+		<% if @user.errors.include?(:image) %>
+		<span class="help-block help-danger"><%= @user.errors[:image].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+<div class="form-group">
+	<%= f.label :name, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.text_field :name, class: "form-control #{'input-danger' if @user.errors.include?(:name)}" %>
+		<% if @user.errors.include?(:name) %>
+		<span class="help-block help-danger"><%= @user.errors[:name].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+<div class="form-group">
+	<%= f.label :birthday, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.date_select :birthday, class: "form-control #{'input-danger' if @user.errors.include?(:birthday)}", start_year: 1900, end_year: Date.today.year %>
+		<% if @user.errors.include?(:birthday) %>
+		<span class="help-block help-danger"><%= @user.errors[:birthday].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+<div class="form-group">
+	<%= f.label :profession, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.text_field :profession, class: "form-control #{'input-danger' if @user.errors.include?(:profession)}", placeholder: "Define lo que haces en 2 palabras..." %>
+		<% if @user.errors.include?(:profession) %>
+		<span class="help-block help-danger"><%= @user.errors[:profession].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+<div class="form-group">
+	<%= f.label :email, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.email_field :email, class: "form-control #{'input-danger' if @user.errors.include?(:email)}" %>
+		<% if @user.errors.include?(:email) %>
+		<span class="help-block help-danger"><%= @user.errors[:email].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-sm-2"><%= t("users.edit.change_pass")%></label>
+	<div class="col-sm-10">
+		<label class="switch"><input type="checkbox" id="change_pass"/><i></i></label>
+	</div>
+</div>
+
+<div class="form-group">
+	<%= f.label :password, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.text_field :password, class: "form-control #{'input-danger' if @user.errors.include?(:password)}", disabled: true %>
+		<% if @user.errors.include?(:password) %>
+		<span class="help-block help-danger"><%= @user.errors[:password].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+<div class="form-group">
+	<%= f.label :password_confirmation, class: "col-sm-2" %>
+	<div class="col-sm-10">
+		<%= f.text_field :password_confirmation, class: "form-control #{'input-danger' if @user.errors.include?(:password_confirmation)}", disabled: true %>
+		<% if @user.errors.include?(:password_confirmation) %>
+		<span class="help-block help-danger"><%= @user.errors[:password_confirmation].to_sentence %></span>
+		<% end %>
+	</div>
+</div>
+
+<section class="panel panel-default">
+	<div class="panel-heading">
+		<strong>
+			<span class="fa fa-bell-o"></span> <%= t("setup.title")%>
+		</strong>
+	</div>
+	<div class="panel-body">
+		<%= f.fields_for :setup do |setup_form| %>
+
+		<div class="form-group">
+			<label class="col-sm-2"><%= setup_form.label :remember_me_notifications %></label>
+			<div class="col-sm-10">
+				<label class="switch"><%= setup_form.check_box :remember_me_notifications %><i></i></label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2"><%= setup_form.label :moment_to_be_remember %></label>
+			<div class="col-sm-10">
+				<span class="ui-select">
+					<%= setup_form.select :moment_to_be_remember, [["Día anterior a las 8:00 PM", 1], ["Mismo día a las 7:00 AM", 2], ["1 hora antes de la hora de cierre", 3]] %>
+				</span>
+			</div>
+		</div>
+		<% end %>
+	</div>
+</section>
+
+<section class="panel panel-default">
+	<div class="panel-heading">
+		<strong>
+			<span class="glyphicon glyphicon-cloud"></span> <%= t("users.api_info.title")%>
+		</strong>
+	</div>
+	<div class="panel-body">
+		<div class="form-group">
+			<%= f.label :uuid, class: "col-sm-2" %>
+			<div class="col-sm-10">
+				<%= @user.uuid%>
+			</div>
+		</div>
+		<div class="form-group">
+			<%= f.label :authentication_token, class: "col-sm-2" %>
+			<div class="col-sm-10">
+				<%= @user.authentication_token%>
+			</div>
+		</div>
+	</div>
+</section>
+
+<button type="submit" class="btn btn-w-md btn-gap-v btn-primary"><%= t("users.edit.main_action")%></button>
+
+<% end %>
+
+<script>
+$("#change_pass").change(function(){
+	$("#user_password, #user_password_confirmation").prop("disabled", !$(this).prop("checked"))
+});
+</script>

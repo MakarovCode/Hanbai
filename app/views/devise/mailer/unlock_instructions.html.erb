@@ -1,0 +1,23 @@
+<p>Hola <%= @resource.name %>,</p>
+<p>
+  Tu cuenta ha sido bloqueada por un número excesivo de intentos no satisfactorios de iniciar sesión.
+</p>
+<p>
+  Da click en el link de abajo para desbloquear tu cuenta:
+</p>
+<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td> <%= link_to 'Desbloquear cuenta', unlock_url(@resource, unlock_token: @token) %></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </td>
+    </tr>
+  </tbody>
+</table>

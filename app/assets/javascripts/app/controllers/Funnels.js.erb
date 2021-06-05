@@ -1,0 +1,1418 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+	var module = angular.module("funnels-module", ['dragularModule', 'ngSanitize']);
+
+	module.controller('FunnelsController', ['$timeout', '$interval', '$http', '$scope', 'dragularService', function ($timeout, $interval, $http, $scope, dragularService) {
+		var self = this;
+
+		this.drake = null;
+
+		this.ori_width = $("#content").width();
+		this.view_loaded = false;
+		this.show_list = false;
+		this.show_menu = false;
+
+		this.selected_funnel = null;
+		this.pending_deals_percent = 0;
+		this.pending_deals_count = 0;
+		this.pending_deals_sum = 0;
+		this.won_deals_percent = 0;
+		this.won_deals_count = 0;
+		this.won_deals_sum = 0;
+		this.lost_deals_percent = 0;
+		this.lost_deals_count = 0;
+		this.lost_deals_sum = 0;
+
+		this.funnels = [];
+
+		this.stages = [];
+
+		this.search_deals_term = "";
+
+		this.new_stage_on = false;
+		this.new_deal_on = false;
+		this.new_deal_error = null;
+		this.new_deal_message = null;
+		this.new_funnel = null;
+		this.editing_funnel = false;
+		this.aux_select_funnel = null;
+		this.funnel_colors = ["#3498DB", "#A569BD", "#58D68D", "#EC7063", "#196F3D", "#16A085", "#5D6D7E", "#17202A", "#F2F3F4"];
+		this.change_color = false;
+		this.selected_deal = null;
+		this.aux_deals = [];
+		this.show_aux_deals_list = null;
+		this.show_aux_deals_list_search = null;
+
+		this.show_deal_editing_name = false;
+		this.show_deal_editing_total = false;
+		this.show_deal_editing_commission = false;
+		this.show_deal_editing_person = false;
+		this.show_deal_editing_estimated_date = false;
+		this.socket = null;
+
+		this.real_time_messages = [];
+		this.real_time_messages_timer = 0;
+		self.extra_fields = [];
+
+		this.realTimeStart = function(){
+			//REAL TIME
+
+			setInterval(function(){
+				$scope.$apply(function(){
+					for (var i = 0; i < self.real_time_messages.length; i++) {
+						if (self.real_time_messages[i].id <= self.real_time_messages_timer){
+							self.real_time_messages.splice(i, 1);
+						}
+					}
+					self.real_time_messages_timer ++;
+				});
+			}, 1000);
+
+			// self.socket = io.connect('//localhost:3010/');
+			self.socket = io.connect('//incalate.com:3010/');
+
+			self.socket.on('connect', function() {
+				console.log("REAL TIME ON");
+			});
+
+			self.socket.on('join', function(data) {
+				debugger;
+				self.real_time_messages.push({id: self.real_time_messages_timer + 5, message: data.message});
+			});
+
+			self.socket.on('leave', function(data) {
+				debugger;
+				self.real_time_messages.push({id: self.real_time_messages_timer + 5, message: data.message});
+				console.log(data);
+			});
+
+			self.socket.on('pull-deal', function(data) {
+				console.log(data);
+				self.real_time_messages.push({id: self.real_time_messages_timer + 5, message: data.message});
+				var deal = data.deal;
+				if (data.move == true){
+					var actual_card = $("#card-"+deal.id);
+					var stage_cards = $("#list-"+deal.stage.id).find(".card");
+					if (stage_cards.length > 0){
+
+						var card_objective = $(stage_cards[deal.priority]);
+						if (deal.priority >= stage_cards.length){
+							card_objective = $(stage_cards[deal.priority-1]);
+						}
+
+						var parent_objective_data = actual_card.parent().data("stage");
+						if (parent_objective_data.id == deal.stage.id || deal.priority >= stage_cards.length){
+							card_objective.after(actual_card);
+						}
+						else{
+							card_objective.before(actual_card);
+						}
+					}
+					else{
+						$("#list-"+deal.stage.id).append(actual_card);
+					}
+				}
+				else if (data.move == false){
+					//UPDATING JUST DATA
+					for (var i = 0; i < self.stages.length; i++) {
+						for (var j = 0; j < self.stages[i].deals.length; j++) {
+							if (self.stages[i].deals[j].id == deal.id){
+								self.stages[i].deals[j] = deal;
+								return;
+							}
+						}
+					}
+
+
+					//NEW Deal
+					for (var i = 0; i < self.stages.length; i++) {
+						if (self.stages[i].id == deal.stage_id){
+							self.stages[i].deals.push(deal);
+							break;
+						}
+					}
+
+				}
+				else{
+					//STATUS WIN; LOST; ARCHIVED
+					for (var i = 0; i < self.stages.length; i++) {
+						for (var j = 0; j < self.stages[i].deals.length; j++) {
+							if (self.stages[i].deals[j].id == deal.id){
+								self.stages[i].deals.splice(j, 1);
+								break
+							}
+						}
+					}
+				}
+
+				self.getStagesPercents();
+			});
+
+			self.socket.on('pull-stage', function(data) {
+				self.real_time_messages.push({id: self.real_time_messages_timer + 5, message: data.message});
+				console.log(data);
+
+				var stage = data.stage;
+				if (data.move == true){
+					var actual_list = $("#stage-"+stage.id);
+					var funnel = $("#stages");
+					var stages_lists = $(".list");
+					if (stages_lists.length > 0){
+						debugger;
+						var list_objective = $(stages_lists[stage.priority]);
+						if (stage.priority >= 0){
+							debugger;
+							list_objective.after(actual_list);
+						}
+						else{
+							list_objective = $(stages_lists[0]);
+							debugger;
+							list_objective.before(actual_list);
+						}
+					}
+					else{
+						debugger;
+						funnel.append(actual_list);
+					}
+				}
+				else if (data.move == false){
+					//UPDATING JUST DATA
+					for (var i = 0; i < self.stages.length; i++) {
+						if (self.stages[i].id == stage.id){
+							self.stages[i] = stage;
+							return;
+						}
+					}
+					debugger;
+
+					//NEW Deal
+					$scope.$apply(function(){
+						self.stages.push(stage);
+					});
+				}
+				else{
+					//ARCHIVED
+					$scope.$apply(function(){
+						for (var i = 0; i < self.stages.length; i++) {
+							if (self.stages[i].id == stage.id){
+								self.stages.splice(i, 1);
+								break;
+							}
+						}
+					});
+				}
+			});
+
+			self.socket.on('pull-funnel', function(data) {
+				self.real_time_messages.push({id: self.real_time_messages_timer + 5, message: data.message});
+				console.log(data);
+				$scope.$apply(function(){
+					self.selected_funnel = data.funnel;
+				});
+				$("body").css({ //, #header, .top-header .logo
+					"background-color": self.selected_funnel.color
+				});
+			});
+
+			//REAL TIME
+		}
+
+		$("#content").click(function(){
+			$scope.$apply(function(){
+				self.show_list = false;
+				self.show_menu = false;
+				self.editing_funnel = false;
+				for (var i = 0; i < self.stages.length; i ++){
+					self.stages[i]["editing"] = false;
+				}
+			});
+		});
+
+		setTimeout(function(){
+			$("#triggerRight").css({
+				position: "fixed",
+				"z-index": 999,
+				top: 100,
+				left: ($(window).width() - 80) + "px",
+				height: $(window).height()+"px"
+			});
+
+			self.afterStagesLoaded();
+
+		}, 500);
+
+		setInterval(function(){
+			$(".popover").hide();
+		}, 3000);
+
+		this.autocompleteChange = function(event, deal){
+			var ele = $(event.currentTarget);
+			var ele_id = $("#funnel_deal_person_id");
+			var object = ele.data("object");
+
+			deal["person_name"] = ele.val();
+
+			deal["person_id"] = ele_id.val();
+
+		}
+
+		this.autocompleteShowChange = function(event, deal){
+
+			var ele = $(event.currentTarget);
+			var ele_id = $("#show_deal_person_id");
+			var object = ele.data("object");
+
+			deal["person_name"] = ele.val();
+
+			deal["person_id"] = ele_id.val();
+			this.updateDeal(deal, deal.stage_id);
+		}
+
+		this.initialize = function (user_uuid, user_token, user_name) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+			self.user_name = user_name;
+			//REAL TIME
+			self.realTimeStart();
+			//REAL TIME
+
+			self.getFunnels();
+
+			$('[data-toggle="popover"]').popover();
+
+			$('.dropdown-toggle').dropdown();
+
+			$('.datepicker-deal').datepicker({
+				format: 'yyyy-mm-dd',
+				orientation: 'bottom'
+			});
+
+			$('.datepicker-deal').datepicker().on('changeDate', function(e) {
+				$('.datepicker-deal').datepicker("hide");
+				$scope.$apply(function(){
+					self.updateDeal(self.selected_deal, self.selected_deal.stage_id);
+				});
+			});
+
+			$(".modal-new-activity").on('hide.bs.modal', function (e) {
+				$("#show-deal-modal").modal("hide");
+			});
+
+			$(".modal-new-activity").on('hidden.bs.modal', function (e) {
+				$scope.$apply(function(){
+					self.getDeal(self.selected_deal, true);
+					$timeout(function(){
+						$("#show-deal-modal").modal("show");
+						// $('.modal-new-activity').modal('handleUpdate');
+					}, 500);
+				});
+			});
+
+			$(".modal-new-activity").on('shown.bs.modal', function (e) {
+				// $('.modal-new-activity').modal('handleUpdate');
+				// $("#show-deal-modal").modal("hide");
+			});
+
+			$("#show-deal-modal").on('shown.bs.modal', function (e) {
+				$("#show-deal-modal").modal('handleUpdate');
+			});
+
+			$("#show-deal-modal").on('hidden.bs.modal', function (e) {
+				$scope.$apply(function(){
+					self.selected_deal = null;
+				});
+			});
+
+			$("#graphs-modal").on('shown.bs.modal', function (e){
+				new Chartkick.PieChart("funnels-chart-1", [["Pendientes", self.pending_deals_count], ["Ganados", self.won_deals_count], ["Perdidos", self.lost_deals_count]], {colors: ["#FFB61C", "#23AE89", "#E94B3B"], legend: "bottom", donut: true})
+
+				new Chartkick.PieChart("funnels-chart-2", [["Pendientes", self.pending_deals_sum], ["Ganados", self.won_deals_sum], ["Perdidos", self.lost_deals_sum]], {colors: ["#FFB61C", "#23AE89", "#E94B3B"], legend: "bottom", donut: true})
+			});
+		}
+
+		$scope.$on('getActualLogID', function (event, args) {
+			if (args.object == "funnel") {
+				$scope.$broadcast('showLog', {
+					funnel_id: self.selected_funnel.id,
+					object: args.object
+				});
+			}
+			else if (args.object == "deal") {
+				$scope.$broadcast('showLog', {
+					funnel_id: self.selected_funnel.id,
+					deal_id: self.selected_deal.id,
+					object: args.object
+				});
+			}
+			else if (args.object == "funnels") {
+				$scope.$broadcast('initUsersAutocomplete', {
+					funnel_id: self.selected_funnel.id,
+					deal_id: self.selected_deal != null ? self.selected_deal.id : 0,
+					object: args.object
+				});
+			}
+			else if (args.object == "deals") {
+				$scope.$broadcast('initUsersAutocomplete', {
+					funnel_id: self.selected_funnel.id,
+					deal_id: self.selected_deal != null ? self.selected_deal.id : 0,
+					object: args.object
+				});
+			}
+		});
+
+		$scope.$on('setExtraFields', function (event, args) {
+			self.extra_fields = args.extra_fields;
+			debugger;
+		});
+
+		this.showExtraFields = function(event){
+			event.stopPropagation();
+
+			$scope.$broadcast('initExtraFields', {
+				funnel_id: self.selected_funnel.id
+			});
+
+			this.show_menu = false;
+
+			$("#extra-fields-modal").modal("show");
+		}
+
+		this.openGraphs = function(event){
+			event.stopPropagation();
+			$("#graphs-modal").modal("show");
+		}
+
+		this.showList = function(event){
+			event.stopPropagation();
+			this.show_list = !this.show_list;
+		}
+
+		this.showMenu = function(event){
+			event.stopPropagation();
+			this.show_menu = !this.show_menu;
+			if (this.show_menu == true){
+				$scope.$broadcast('initLog', {
+					object: "funnel"
+				});
+			}
+		}
+
+		this.changeColor = function(event){
+			event.stopPropagation();
+			this.change_color = true;
+		}
+
+		this.cancelChangeColor = function(event){
+			event.stopPropagation();
+			this.change_color = false;
+		}
+
+		this.applyColorChange = function(event, color){
+			event.stopPropagation();
+			this.selected_funnel.color = color;
+			$("body").css({ //, #header, .top-header .logo
+				"background-color": this.selected_funnel.color
+			});
+			this.updateFunnel(null);
+		}
+
+		this.showEditFunnel = function(event){
+			event.stopPropagation();
+			this.editing_funnel = true;
+		}
+
+		this.selectFunnel = function(event, funnel){
+			if (event != null){
+				event.stopPropagation();
+			}
+			//REAL TIME
+			if (self.selected_funnel != null){
+				self.socket.emit('leave-funnel', {funnel: "funnel-"+self.selected_funnel.id, username: self.user_name, username: self.user_name});
+			}
+			self.socket.emit('join-funnel', {funnel: "funnel-"+funnel.id, username: self.user_name, username: self.user_name});
+			//REAL TIME
+
+			$scope.$broadcast('initMembers', {
+				object: "funnels",
+				members: funnel.members
+			});
+
+			$scope.$broadcast('initExtraFields', {
+				funnel_id: funnel.id
+			});
+
+			this.selected_funnel = funnel;
+			this.stages = this.selected_funnel.stages;
+			this.getFunnel();
+			this.getStages();
+
+			localStorage.setItem("last_funnel", funnel.id);
+
+			$("body").css({
+				"background-color": this.selected_funnel.color
+			});
+		}
+
+		this.getFunnel = function(){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				stats: true
+			};
+
+			$http.get("/app/api/v1/funnels/"+this.selected_funnel.id+".json", {params: params}).then(
+				function(res, status){
+					self.pending_deals_percent = res.data.pending_deals_percent;
+					self.pending_deals_count = res.data.pending_deals_count;
+					self.pending_deals_sum = res.data.pending_deals_sum;
+					self.won_deals_percent = res.data.won_deals_percent;
+					self.won_deals_count = res.data.won_deals_count;
+					self.won_deals_sum = res.data.won_deals_sum;
+					self.lost_deals_percent = res.data.lost_deals_percent;
+					self.lost_deals_count = res.data.lost_deals_count;
+					self.lost_deals_sum = res.data.lost_deals_sum;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.getFunnels = function(){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				full_data: true
+			};
+
+			$http.get("/app/api/v1/funnels.json", {params: params}).then(
+				function(res, status){
+					self.funnels = res.data;
+
+					if (self.aux_select_funnel == null){
+						if (self.funnels.length > 0){
+							var last_funnel_id = localStorage.getItem("last_funnel");
+							if (last_funnel_id == null){
+								self.selectFunnel(null,self.funnels[0]);
+							}
+							else{
+								for (var i = 0; i < self.funnels.length; i ++){
+									if (self.funnels[i].id == last_funnel_id){
+										self.selectFunnel(null,self.funnels[i]);
+										break;
+									}
+								}
+							}
+						}
+					}
+					else{
+						for (var i = 0; i < self.funnels.length; i ++){
+							if (self.funnels[i].id == self.aux_select_funnel){
+								self.selectFunnel(null,self.funnels[i]);
+								break;
+							}
+						}
+					}
+					if (self.selected_funnel == null && self.funnels.length > 0){
+						self.selectFunnel(null,self.funnels[0]);
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.newFunnel = function(event){
+			event.stopPropagation();
+			this.new_funnel = {
+				name: ""
+			}
+		}
+
+		this.createFunnel = function(event){
+			event.stopPropagation();
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				default_stages: true,
+				funnel: {
+					name: this.new_funnel.name
+				}
+			};
+
+			this.selected_funnel = null;
+			this.new_funnel = null;
+			$http.post("/app/api/v1/funnels.json", params).then(
+				function(res, status){
+					self.show_list = false;
+					self.aux_select_funnel = res.data.id;
+					self.getFunnels();
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+					if (res.data.need_gold == true){
+						$scope.need_gold_message = res.data.errors;
+						$("#expire-modal").modal("show");
+					}
+				}
+			);
+		}
+
+		this.updateFunnel = function(event){
+			if (event != null){
+				event.stopPropagation();
+			}
+			this.editing_funnel = false;
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				funnel: {
+					name: this.selected_funnel.name,
+					color: this.selected_funnel.color
+				}
+			};
+
+			$http.put("/app/api/v1/funnels/"+this.selected_funnel.id+".json", params).then(
+				function(res, status){
+					self.socket.emit('push-funnel', {funnel: "funnel-"+self.selected_funnel.id, funnel_object: self.selected_funnel, username: self.user_name});
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.cancelNewFunnel = function(event){
+			event.stopPropagation();
+			this.new_funnel = null;
+		}
+
+		this.getStages = function(){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				full_data: true,
+				funnel_id: this.selected_funnel.id
+			};
+
+			$http.get("/app/api/v1/stages.json", {params: params}).then(
+				function(res, status){
+					self.stages = res.data;
+
+					self.dragularStages();
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.dragularStages = function(){
+			$timeout(function() {
+				self.dragula_objects = [];
+
+				for (var i = 0; i < self.stages.length; i ++){
+					var stage = self.stages[i];
+					self.dragula_objects.push(document.querySelector('#list-'+stage.id));
+				}
+
+				dragularService(self.dragula_objects, {
+					nameSpace: 'cells',
+					scope: $scope
+					//				containersModel: (function getNestedContainersModel(){
+					//					var parent = $scope.items,
+					//						containersModel = [];
+					//					for (var i = 0; i < parent.length; i++) {
+					//						containersModel.push(parent[i].items);
+					//					}
+					//					return containersModel;
+					//				})(),
+				});
+			}, 500);
+		}
+
+		this.getStagesPercents = function(){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				funnel_id: this.selected_funnel.id
+			};
+
+			$http.get("/app/api/v1/stages.json", {params: params}).then(
+				function(res, status){
+					for (var i = 0; i < self.stages.length; i ++){
+						for (var j = 0; j < res.data.length; j ++){
+							if (self.stages[i].id == res.data[j].id){
+								self.stages[i].activities_percent = res.data[j].activities_percent;
+							}
+						}
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.newStage = function(){
+			this.new_stage_on = true;
+			var tmp_stage = {
+				name: "",
+				funnel_id: this.selected_funnel.id,
+				activities_percent: 0
+			}
+			this.stages.push(tmp_stage);
+			$("#content").animate({
+				scrollLeft: 10000
+			}, 700);
+		}
+
+		this.isLastStage = function(stage){
+			for (var i = 0; i < this.stages.length; i ++){
+				if (stage.priority < this.stages[i].priority){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		this.changeStageHeaderType = function(stage, type){
+			stage['header_type'] = type;
+		}
+
+		this.changeStageTotalsType = function(stage, type){
+			if (type == 1){
+				type = 2;
+			}
+			else if (type == 2){
+				type = 0;
+			}
+			else{
+				type = 1;
+			}
+			stage["total_show_type"] = type;
+		}
+
+		this.showWonDeals = function($event){
+			self.show_menu = true;
+			self.showAuxDealsList($event, 1);
+		}
+
+		this.sumStageValues = function(stage, type){
+
+			if (stage == null){
+				return;
+			}
+
+			if (stage.deals == null){
+				return;
+			}
+
+			var total = 0;
+			var commission = 0;
+
+			if (type == null){
+				type = 0;
+				stage["total_show_type"] = type;
+			}
+
+			for (var j = 0; j < stage.deals.length; j ++){
+				if (type == 0){
+					total += stage.deals[j].total;
+					commission += stage.deals[j].commission;
+				}
+				else if (type != 0 && stage.deals[j].status == type){
+					total += stage.deals[j].total;
+					commission += stage.deals[j].commission;
+				}
+			}
+
+			return {total: total, commission: commission};
+		}
+
+		this.createStage = function(stage){
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				stage: stage
+			};
+
+			$http.post("/app/api/v1/stages.json", params).then(
+				function(res, status){
+					self.new_stage_on = false;
+					for (var i = 0; i < self.stages.length; i ++){
+						if (self.stages[i].id == null){
+							self.stages[i]["id"] = res.data.id;
+							self.stages[i]["deals"] = [];
+							break;
+						}
+					}
+					self.dragularStages();
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.cancelNewStage = function(){
+			this.new_stage_on = false;
+			for (var i = 0; i < self.stages.length; i ++){
+				if (self.stages[i].id == null){
+					self.stages.splice(i, 1);
+				}
+			}
+		}
+
+		this.editStage = function(event, stage){
+			event.stopPropagation();
+			stage["editing"] = true;
+		}
+
+		this.updateStage = function(stage, priority){
+			stage["editing"] = false;
+			if (stage.id != null){
+
+				var params = {
+					user_uuid: self.user_uuid,
+					user_token: self.user_token,
+					stage: {
+						name: stage.name,
+						funnel_id: this.selected_funnel.id
+					}
+				};
+
+				if (priority != null && priority.length > 0){
+					params = {
+						user_uuid: self.user_uuid,
+						user_token: self.user_token,
+						priority: priority,
+						stage: {
+							funnel_id: this.selected_funnel.id
+						}
+					};
+				}
+
+				$http.put("/app/api/v1/stages/"+stage.id+".json", params).then(
+					function(res, status){
+						if (priority != null && priority.length > 0){
+							//REAL TIME
+							stage.priority = res.data.priority;
+							self.socket.emit('push-stage', {funnel: "funnel-"+self.selected_funnel.id, stage: stage, move: true, username: self.user_name});
+							//REAL TIME
+						}
+						else{
+							self.socket.emit('push-stage', {funnel: "funnel-"+self.selected_funnel.id, stage: stage, move: false, username: self.user_name});
+						}
+					},
+					function(res, status){
+						//alert("Ha ocurrido un error inesperado");
+					}
+				);
+			}
+
+		}
+
+		this.destroyStage = function(event, stage){
+			if (stage["destroying"] == true){
+				stage["destroying"] = false;
+				var params = {
+					user_uuid: self.user_uuid,
+					user_token: self.user_token,
+					funnel_id: this.selected_funnel.id
+
+				};
+
+				for (var i = 0; i < this.stages.length; i ++){
+					if (this.stages[i].id == stage.id){
+						this.stages.splice(i, 1);
+						break;
+					}
+				}
+
+				$http.delete("/app/api/v1/stages/"+stage.id+".json", {params: params}).then(
+					function(res, status){
+						self.socket.emit('push-stage', {funnel: "funnel-"+self.selected_funnel.id, stage: stage, move: "destroy", username: self.user_name});
+					},
+					function(res, status){
+						//alert("Ha ocurrido un error inesperado");
+					}
+				);
+			}
+			else{
+				event.stopPropagation();
+				stage["destroying"] = true;
+			}
+		}
+
+		this.showDeal = function(event, deal){
+			if (event != null){
+				event.stopPropagation();
+			}
+			if (deal.person == ""){
+				deal.person = null;
+			}
+			if (deal.id != null){
+				this.selected_deal = deal;
+				$scope.timeline_object_type = "deal";
+				$scope.timeline_object = self.selected_deal;
+				$("#show-deal-modal").modal("show");
+				$scope.$broadcast('initLog', {
+					object: "deal"
+				});
+				$scope.$broadcast('initMembers', {
+					object: "deals",
+					members: this.selected_deal.members
+				});
+			}
+		}
+
+		this.showAuxDealsList = function(event, _status){
+			if (event != null){
+				event.stopPropagation();
+			}
+			this.show_aux_deals_list = _status;
+			this.show_aux_deals_list_search = "";
+
+			//TODO:
+			//Cargar DEALS deacuerdo al estado
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				status: _status
+			};
+
+			$http.get("/app/api/v1/deals.json", {params: params}).then(
+				function(res, status){
+					self.aux_deals = res.data;
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.hideAuxDealsList = function(event){
+			event.stopPropagation();
+			this.show_aux_deals_list = null;
+			this.show_aux_deals_list_search = "";
+
+		}
+
+		$scope.getDeal = function(deal, selected){
+			self.getDeal(deal, selected);
+		}
+
+		this.getDeal = function(deal, selected){
+			// event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				full_data: true
+			};
+
+			$http.get("/app/api/v1/deals/"+deal.id+".json", {params: params}).then(
+				function(res, status){
+					if (selected == true){
+
+						self.selected_deal = res.data;
+					}
+					for (var i = 0; i < self.stages.length; i ++){
+						if (self.stages[i].id == res.data.stage.id){
+							for (var j = 0; j < self.stages[i].deals.length; j ++){
+								if (self.stages[i].deals[j].id == res.data.id){
+									self.stages[i].deals[j] = res.data;
+									self.showDeal(null, self.stages[i].deals[j]);
+									self.getStagesPercents();
+
+									return;
+								}
+							}
+						}
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.changeDealStatus = function(event, deal, _status){
+			event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				status: _status
+			};
+			$("#show-deal-modal").modal("hide");
+			deal.status = _status;
+			$http.post("/app/api/v1/deals/"+deal.id+"/change_status.json", params).then(
+				function(res, status){
+					self.getFunnel();
+					if (_status == 0){
+						for (var i = 0; i < self.aux_deals.length; i ++){
+							if (self.aux_deals[i].id == deal.id){
+								self.aux_deals.splice(j, 1);
+								for (var j = 0; j < self.stages.length; j ++){
+									if (self.stages[j].id == deal.stage.id){
+										self.stages[j].deals.push(deal);
+										// REAL TIME
+										self.socket.emit('push-deal', {funnel: "funnel-"+self.selected_funnel.id, deal: deal, move: false, username: self.user_name});
+										// REAL TIME
+										return;
+									}
+								}
+							}
+						}
+					}
+					else{
+						for (var i = 0; i < self.stages.length; i ++){
+							if (self.stages[i].id == deal.stage.id){
+								for (var j = 0; j < self.stages[i].deals.length; j ++){
+									if (self.stages[i].deals[j].id == deal.id){
+										self.stages[i].deals.splice(j, 1);
+										// REAL TIME
+										self.socket.emit('push-deal', {funnel: "funnel-"+self.selected_funnel.id, deal: deal, move: "delete", username: self.user_name});
+										// REAL TIME
+										return;
+									}
+								}
+							}
+						}
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+		this.newDeal = function(stage){
+			if (this.new_deal_on == false){
+				this.new_deal_error = null;
+				this.new_deal_message = null;
+				this.new_deal_on = true;
+				var tmp_deal = {
+					title: "",
+					person_id: "",
+					total: "",
+					commission: 0,
+					estimated_close_date: null,
+					stage_id: stage.id
+				}
+				stage.deals.push(tmp_deal);
+				$("#list-"+stage.id).animate({
+					scrollTop: 100000
+				}, 1000);
+			}
+		}
+
+		this.createDeal = function(stage, deal){
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				person_name: deal.person_name,
+				deal: {
+					title: deal.title,
+					person_id: $("#funnel_deal_person_id").val(),//deal.person_id,
+					total: deal.total,
+					commission: deal.commission,
+					estimated_close_date: deal.estimated_close_date,
+					stage_id: stage.id,
+					currency: "COP",
+					extra_field_deals_attributes: []
+				}
+			};
+
+			var deal_keys = Object.keys(deal);
+
+			for (var i = 0; i < self.extra_fields.length; i++) {
+				var extra_field = self.extra_fields[i];
+				for (var j = 0; j < deal_keys.length; j++) {
+					var deal_key = deal_keys[j];
+					if (extra_field.model_name_id == deal_key){
+						params.deal.extra_field_deals_attributes.push({
+							kind: extra_field.kind,
+							value: deal[deal_key],
+							extra_field_id: extra_field.id
+						});
+					}
+				}
+			}
+
+			this.new_deal_error = null;
+			this.new_deal_message = null;
+
+			$http.post("/app/api/v1/deals.json", params).then(
+				function(res, status){
+					self.new_deal_on = false;
+					for (var i = 0; i < stage.deals.length; i ++){
+						if (stage.deals[i].id == null){
+							stage.deals[i]["id"] = res.data.id;
+
+							//REAL TIME
+							self.socket.emit('push-deal', {funnel: "funnel-"+self.selected_funnel.id, deal: stage.deals[i], move: false, username: self.user_name});
+							//REAL TIME
+
+							self.getDeal(stage.deals[i], false);
+							break;
+						}
+					}
+					self.getStagesPercents();
+				},
+				function(res, status){
+					if (res.data.need_gold == true){
+						$scope.need_gold_message = res.data.errors;
+						$("#expire-modal").modal("show");
+					}
+					self.new_deal_error = res.data.errors;
+					self.new_deal_message = res.data.message;
+					$("#list-"+stage.id).animate({
+						scrollTop: 100000
+					}, 1000);
+				}
+			);
+		}
+
+		this.cancelNewDeal = function(stage){
+			this.new_deal_on = false;
+			for (var i = 0; i < stage.deals.length; i ++){
+				if (stage.deals[i].id == null){
+					stage.deals.splice(i, 1);
+				}
+			}
+		}
+
+		this.showDealEditingName = function(event){
+			event.stopPropagation();
+			this.show_deal_editing_name = true;
+		}
+
+		this.showDealEditingTotal = function(event){
+			event.stopPropagation();
+			this.show_deal_editing_total = true;
+		}
+
+		this.showDealEditingCommission = function(event){
+			event.stopPropagation();
+			this.show_deal_editing_commission = true;
+		}
+
+		this.showDealEditingPerson = function(event){
+			event.stopPropagation();
+			this.show_deal_editing_person = true;
+		}
+
+		this.showDealEditingEstimatedDate = function(event){
+			event.stopPropagation();
+			this.show_deal_editing_estimated_date = true;
+		}
+
+		this.updateDeal = function(deal, stage_id, priority, from_modal){
+			this.show_deal_editing_commission = false;
+			this.show_deal_editing_name = false;
+			this.show_deal_editing_total = false;
+			this.show_deal_editing_person = false;
+			this.show_deal_editing_estimated_date = false;
+
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				person_name: deal.person_name,
+				deal: {
+					title: deal.title,
+					person_id: deal.person_id,
+					total: deal.total,
+					commission: deal.commission,
+					estimated_close_date: deal.estimated_close_date,
+					stage_id: stage_id,
+					currency: "COP"
+				},
+				old_stage_id: deal.stage.id
+			};
+
+			deal.stage_id = stage_id;
+
+			for (var i = 0; i < self.stages.length; i ++){
+				if (self.stages[i].id == stage_id){
+					deal.stage = self.stages[i];
+					break;
+				}
+			}
+
+			if (priority != null && priority.length > 0){
+				params["priority"] = priority;
+				// deal.priority = priority;
+			}
+
+			$http.put("/app/api/v1/deals/"+deal.id+".json", params).then(
+				function(res, status){
+
+					if (self.selected_deal != null){
+						self.getDeal(self.selected_deal, true);
+						//REAL TIME
+						self.socket.emit('push-deal', {funnel: "funnel-"+self.selected_funnel.id, deal: deal, move: false, username: self.user_name});
+						//REAL TIME
+					}
+					if (priority != null && priority.length > 0){
+						self.getStagesPercents();
+						//REAL TIME
+						deal.priority = res.data.priority;
+						self.socket.emit('push-deal', {funnel: "funnel-"+self.selected_funnel.id, deal: deal, move: true, username: self.user_name});
+						//REAL TIME
+					}
+					return;
+
+
+					// if (from_modal == true){
+					// for (var i = 0; i < self.stages.length; i ++){
+					//
+					// 	if (self.stages[i].id == res.data.old_stage_id){
+					// 		for (var j = 0; j < self.stages[i].deals.length; j ++){
+					// 			if (self.stages[i].deals[j].id == deal.id){
+					// 				self.stages[i].deals.splice(j, 1);
+					// 				debugger;
+					// 				break;
+					// 			}
+					// 		}
+					// 	}
+					// 	else if (self.stages[i].id == deal.stage_id){
+					// 		self.stages[i].deals.push(deal);
+					// 		debugger;
+					// 	}
+					// }
+
+					// if (res.data.stage_id == stage_id){
+					// 	return;
+					// }
+
+					// if (from_modal == true){
+					// for (var i = 0; i < self.stages.length; i ++){
+					// 	if (self.stages[i].id == stage_id){
+					// 		deal.stage_id = stage_id;
+					// 		if (deal.person == ''){
+					// 			deal.person = null;
+					// 		}
+					// 		self.stages[i].deals.push(deal);
+					// 		break;
+					// 	}
+					// }
+
+					// }
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado: "+res.data.errors);
+				}
+			);
+		}
+
+		// this.newActivity = function(event){
+		// 	event.stopPropagation();
+		// 	$(".modal-new-activity").data("deal_id", this.selected_deal.id);
+		// 	$(".modal-new-activity").modal("show");
+		// }
+		//
+		// this.editActivity = function(event, activity){
+		// 	event.stopPropagation();
+		// 	$(".modal-new-activity").data("event", activity);
+		// 	$(".modal-new-activity").modal("show");
+		// 	// $(".modal-new-activity").data("deal_id", this.selected_deal.id);
+		// }
+		//
+		// this.changeActivityStatus = function(event, activity, _status){
+		// 	event.stopPropagation();
+		//
+		// 	var params = {
+		// 		user_uuid: self.user_uuid,
+		// 		user_token: self.user_token,
+		// 		status: _status
+		// 	};
+		// 	activity.status = _status;
+		// 	$http.post("/app/api/v1/activities/"+activity.id+"/change_status.json", params).then(
+		// 		function(res, status){
+		// 			if (_status == 3){
+		// 				for (var i = 0; i < self.selected_deal.activities.length; i ++){
+		// 					if (self.selected_deal.activities[i].id == activity.id){
+		// 						self.selected_deal.activities.splice(i, 1);
+		// 						break;
+		// 					}
+		// 				}
+		// 			}
+		// 			self.getDeal(self.selected_deal, true);
+		// 		},
+		// 		function(res, status){
+		// 			//alert("Ha ocurrido un error inesperado");
+		// 		}
+		// 	);
+		// }
+
+		this.afterStagesLoaded = function(){
+			var stages = $(".funnels .list");
+
+			if ($("#content").width() < self.stages.length * 270){
+				$(".funnels").css({
+					width: (stages.length * 270) + "px"
+				});
+			}
+			$(".funnels-header").css({
+				width: self.ori_width + "px"
+			});
+			$(".funnels-list, .funnels-menu").css({
+				height: ($(window).height() - 120) + "px"
+			});
+			$scope.$apply(function(){
+				self.view_loaded = true;
+			});
+		}
+
+		this.afterDealsLoaded = function(){
+			$(".card-cont").css({
+				"max-height": ($(window).height() - 220) + "px",
+				"overflow-y": "auto"
+			});
+			$('.datepicker-new-deal').datepicker({
+				format: 'yyyy-mm-dd',
+				orientation: 'top'
+			});
+		}
+
+		$scope.$on('onRepeatLast', function(scope, element, attrs) {
+			if (element.data("list") == "stages") {
+				console.log("Stages drawed");
+				self.afterStagesLoaded();
+				// debugger;
+				// if (self.drake != null){
+				// 	var stage = element.data("stage");
+				// 	for (var i = 0; i < self.stages.length; i ++){
+				// 		if (self.stages[i].id == stage.id){
+				// 			if (self.drake.containers != null){
+				// 				debugger;
+				// 				self.drake.containers.push("#stage-"+stage.id);
+				// 			}
+				// 		}
+				// 	}
+				// }
+				//self.loadDragulaForStages();
+			}
+			else if (element.data("list") == "deals") {
+				console.log("Deals drawed");
+				self.afterDealsLoaded();
+				//				self.loadDragulaForDeals();
+			}
+			$('.dropdown-toggle').dropdown();
+			self.afterStagesLoaded();
+			self.afterDealsLoaded();
+			$('[data-toggle="popover"]').popover();
+		});
+
+
+		$timeout(function() { // timeount due to nested ngRepeat to be ready
+			self.dragularon();
+		}, 0);
+
+		this.dragularon = function(){
+			dragularService.cleanEnviroment();
+			var stagesContainer = document.querySelector('#stages');
+			self.drake = dragularService(stagesContainer, {
+				moves: function(el, container, handle) {
+					console.log(handle.classList.contains('handle'));
+					return handle.classList.contains('handle');
+				},
+				nameSpace: 'rows',
+				scope: $scope
+			});
+
+			self.timer;
+			var container = document.getElementById('content');
+			var leftBar = document.getElementById('nav-container');
+			var rightBar = document.getElementById('triggerRight');
+
+			self.dragScroll(leftBar, container, -5, 20, "l");
+			self.dragScroll(rightBar, container, 5, 20, "r");
+
+			$scope.$on('dragulardrop', function(e, el, target, source, sibling) {
+				e.stopPropagation();
+
+				$timeout(function() {
+
+					if (el.tagName == "SECTION"){
+
+						var stage = $(el).data("stage");
+						var stage_id = stage.id;
+						var stages_conts = $(target).find(".list");
+						var priority = [];
+						for (var i = 0; i < stages_conts.length; i ++){
+							var stage_cont = $(stages_conts[i]);
+							var aux_stage = stage_cont.data("stage");
+							priority.push(aux_stage.id);
+
+						}
+						self.updateStage(stage, priority);
+					}
+					else{
+						var deal = $(el).data("deal");
+						var deal_id = deal.id;
+						var deals_conts = $(target).find(".card");
+						var stage = $(target).data("stage");
+						var stage_id = deal.id
+						if (deal.stage_id != stage.id){
+							stage_id = stage.id
+						}
+
+						var priority = [];
+
+						for (var i = 0; i < deals_conts.length; i ++){
+							var deal_cont = $(deals_conts[i]);
+							var aux_deal = deal_cont.data("deal");
+							priority.push(aux_deal.id);
+						}
+
+						self.updateDeal(deal, stage_id, priority);
+					}
+				}, 0);
+			});
+			$scope.$on('dragulardrop', myFn('drop'));
+
+			function myFn(eventName) {
+				return function() {
+					console.log(eventName, arguments);
+				};
+			}
+		}
+
+		this.dragScroll = function(bar, container, inc, speed, d) {
+			if (!speed) {
+				speed = 20;
+			}
+			angular.element(bar).on('dragularenter', function() {
+				console.log("IN - " + d);
+				if (d == "l" || d == "r"){
+					container.scrollLeft += inc;
+				}
+				else if (d == "u" || d == "d"){
+					container.scrollTop += inc;
+				}
+				self.timer = $interval(function moveScroll() {
+					if (d == "l" || d == "r"){
+						container.scrollLeft += inc;
+					}
+					else if (d == "u" || d == "d"){
+						container.scrollTop += inc;
+					}
+				}, speed);
+			});
+			angular.element(bar).on('dragularleave dragularrelease', function() {
+				console.log("OUT");
+				$interval.cancel(self.timer);
+			});
+		}
+
+	}]);
+})();

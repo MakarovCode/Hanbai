@@ -1,0 +1,81 @@
+(function () {
+	<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+		var module = angular.module("show-person-module", ['ui.calendar', 'ui.tinymce']);
+
+	module.controller('ShowPersonController', ['$http', '$scope', 'uiCalendarConfig', function ($http, $scope, uiCalendarConfig) {
+		var self = this;
+		this.person = null;
+
+		$("#modal-show-person").on("shown.bs.modal", function(e){
+			var data_person = $("#modal-show-person").data("person");
+
+			$scope.$apply(function(){
+				if (data_person != null){
+					self.person = data_person;
+					$scope.timeline_object_type = "person";
+					$scope.timeline_object = self.person;
+					self.render();
+				}
+			});
+
+		});
+
+		$("#modal-show-person").on('hidden.bs.modal', function (e) {
+			$("#modal-show-person").data("person", null);
+			$scope.$apply(function(){
+				// $scope.activities = [];
+				// self.person = null;
+				// $scope.timeline_object_type = null;
+				// $scope.timeline_object = null;
+
+			});
+		});
+
+		/* Autor: Simon Correa
+	   *
+	   * Fecha creacion: 2016-11-21
+	   *
+	   * Autor actualizacion:
+	   *
+	   * Fecha actualizacion:
+	   *
+	   *
+	  */
+		this.initialize = function (user_uuid, user_token) {
+			self.user_uuid = user_uuid;
+			self.user_token = user_token;
+		}
+
+		this.render = function(){
+			new Chartkick.PieChart("deals", [["Ganados", self.person.won_deals_count], ["Pendientes", self.person.open_deals_count], ["Perdidos", self.person.closed_deal_count]], {donut: true, legend: false})
+			new Chartkick.PieChart("activities", [["Realizadas", self.person.done_activities_count], ["Pendientes", self.person.undone_activities_count]], {donut: true, legend: false})
+		}
+
+		$scope.getPerson = function(person, selected){
+			self.getPerson(person, selected);
+		}
+
+		this.getPerson = function(person, selected){
+			// event.stopPropagation();
+
+			var params = {
+				user_uuid: self.user_uuid,
+				user_token: self.user_token,
+				full_data: true
+			};
+
+			$http.get("/app/api/v1/people/"+this.person.id+".json", {params: params}).then(
+				function(res, status){
+					if (selected == true){
+						self.person = res.data;
+					}
+				},
+				function(res, status){
+					//alert("Ha ocurrido un error inesperado");
+				}
+			);
+		}
+
+	}]);
+})();

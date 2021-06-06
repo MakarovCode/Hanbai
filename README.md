@@ -1,5 +1,5 @@
 # Hanbai
-Change
+CMR and Funnels like sales system developed in Ruby on Rails, AngularJS and NodeJS for real-time
 
 # DEMO
 [Hanbai](https://hanbai.geekoi.com) - Test the web app
@@ -18,6 +18,22 @@ Change
     * This app has a Trello like interface for dealing with the Funnels and Sales
 * PostgreSQL;
     * 13;
+
+# MODULES & FUNCTIONALITIES
+* Manage companies records;
+* Manage clients records;
+* Funnel Trello like interface for creating and managing fully customized funnels;
+    * Create and customize
+        * Teams and permissions
+        * Funnel Stages or States
+        * Customized fields for deals
+        * Activities for each deal
+        * Background colors
+        * Drag n Drop and more
+* Calendar View
+* Metrics Dashboard
+* Settings
+* RestAPI
 
 
 # SOME SCREENSHOTS
